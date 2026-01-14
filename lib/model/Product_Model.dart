@@ -1,0 +1,16 @@
+class Product {
+  final String id;
+  final String name;
+
+  Product({
+    required this.id,
+    required this.name,
+  });
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: json['_id'],
+      name: json['productName'],
+    );
+  }
+}
