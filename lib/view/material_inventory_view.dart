@@ -129,6 +129,7 @@ class _MaterialInventoryViewState extends State<MaterialInventoryView> {
               child: PrimaryButton(
                 radius: 10,
                 color: AppColors.scoundry_clr,
+                  isLoading: isLoading,
                 onPressed: () {
                   context.push(RouteName.material_request);
                 },

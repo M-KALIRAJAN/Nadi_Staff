@@ -29,7 +29,7 @@ class _BottomNavState extends State<BottomNav> {
       () => HomeView(),
 
       () => MaterialInventoryView(),
-      () => SparePartUsed(),
+      // () => SparePartUsed(),
       () => ProfileView(),
     ];
   }

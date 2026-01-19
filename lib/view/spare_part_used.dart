@@ -1,171 +1,327 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
+import 'package:tech_app/model/OurSpareParts_Model.dart';
+import 'package:tech_app/model/UpdatePayment_Model.dart';
+import 'package:tech_app/provider/Ourspareparts_Provider.dart';
+import 'package:tech_app/provider/UpdatedPayment_Provider.dart';
+import 'package:tech_app/provider/service_list_provider.dart';
+import 'package:tech_app/routes/route_name.dart';
 import 'package:tech_app/widgets/inputs/primary_button.dart';
 
-class SparePartUsed extends StatefulWidget {
-  const SparePartUsed({super.key});
+class SparePartUsed extends ConsumerStatefulWidget {
+  final String userServiceId;
+  const SparePartUsed({super.key, required this.userServiceId});
 
   @override
-  State<SparePartUsed> createState() => _SparePartUsedState();
+  ConsumerState<SparePartUsed> createState() => _SparePartUsedState();
 }
 
-class _SparePartUsedState extends State<SparePartUsed> {
-  bool isSparePartsUsed = false;
-  bool is_Selectedsaprepart = false;
+class _SparePartUsedState extends ConsumerState<SparePartUsed> {
+  bool sparePartsUsed = false;
 
-  final List<Map<String, dynamic>> spareParts = [
-    {'name': 'Oil Filter', 'price': 75.88, 'checked': false},
-    {'name': 'Air Plug Set', 'price': 45.88, 'checked': false},
-    {'name': 'Cabin Air Filter', 'price': 15.30, 'checked': false},
-    {'name': 'Spark Plug Set', 'price': 35.00, 'checked': false},
-  ];
+  final List<Datum> selectedParts = [];
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.refresh(oursparepartsprovider));
+  }
 
-  final List<Map<String, dynamic>> paymentlist = [
-    {"name": "spark", 'price': 35.00},
-    {"name": "spark", 'price': 35.00},
-    {"name": "Total", 'price': 35.00},
-  ];
+  double get totalAmount {
+    double total = 0;
+    for (final part in selectedParts) {
+      total += part.productId.price * int.parse(part.count);
+    }
+    return total;
+  }
 
+  Map<String, int> partCounts = {};
   @override
   Widget build(BuildContext context) {
+    final sparePartsAsync = ref.watch(oursparepartsprovider);
+    Future<void> _proceedToPayment() async {
+      // store checkbox value
+      final bool spareUsedValue = sparePartsUsed;
+
+      // logs (optional)
+      for (var part in selectedParts) {
+        int count = partCounts[part.productId.id] ?? 1;
+        debugPrint(
+          "Product: ${part.productId.productName}, "
+          "ID: ${part.productId.id}, "
+          "Count: $count, "
+          "sparePartsUsed: $spareUsedValue",
+        );
+      }
+
+      // build selected spare parts list
+      final List<SelectedSparePart> sparePartList = selectedParts.map((part) {
+        return SelectedSparePart(
+          productId: part.productId.id,
+          count: partCounts[part.productId.id] ?? 1,
+        );
+      }).toList();
+
+      // create request model
+      final UpdatePayment updatePayment = UpdatePayment(
+        userServiceId: widget.userServiceId,
+        sparePartsUsed: spareUsedValue,
+        selectedSpareParts: sparePartList,
+      );
+
+      try {
+        // call API
+        await ref
+            .read(updatePaymentServiceProvider)
+            .passupdatepayment(updatePayment); 
+
+              // 🔥 REFRESH SERVICE LIST API
+  ref.invalidate(serviceListProvider);
+
+        context.push(RouteName.bottom_nav);
+        // reset after success
+        setState(() {
+          partCounts.clear();
+          selectedParts.clear();
+          sparePartsUsed = false;
+        });
+      } catch (e) {
+        debugPrint("Update payment failed: $e");
+
+        // OPTIONAL: show error to user
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(
+              e.toString().replaceFirst('Exception: ', ''),
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        );
+      }
+    }
+
     return Scaffold(
-   
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // MAIN CHECKBOX
-              Row(
-                children: [
-                  Checkbox(
-                    value: isSparePartsUsed,
-                    activeColor: AppColors.scoundry_clr,
-                    onChanged: (value) {
-                      setState(() {
-                        isSparePartsUsed = value!;
-                      });
-                    },
-                  ),
-                  const Text(
-                    "Spare Parts Used",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 16),
-
-              /// AVAILABLE PARTS
-              _availablePartsCard(),
-              const SizedBox(height: 20),
-
-              Text(
-                "Selected parts",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-
-              // SELECTED SPARE PART CARD
-              Container(
-                height: 90,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: Colors.white,
-                ),
-                child: Row(
-                  children: [
-                    Radio<bool>(
-                      value: true,
-                      groupValue: is_Selectedsaprepart,
-                      activeColor: AppColors.scoundry_clr,
-                      onChanged: (value) {
-                        setState(() {
-                          is_Selectedsaprepart = value!;
-                        });
-                      },
-                    ),
-
-                    const SizedBox(width: 8),
-
-                    // IMAGE BOX
-                    Container(
-                      height: 60,
-                      width: 60,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.grey.withOpacity(0.5),
-                          width: 1.5,
-                        ),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: const Icon(Icons.build_outlined),
-                    ),
-
-                    const SizedBox(width: 12),
-
-                    // NAME & PRICE
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          "Spare Parts",
-                          style: TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          "BHD 89",
-                          style: TextStyle(
-                            color: AppColors.scoundry_clr,
-                            fontWeight: FontWeight.w600,
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      /// MAIN CHECKBOX
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: sparePartsUsed,
+                            activeColor: AppColors.scoundry_clr,
+                            onChanged: (value) {
+                              setState(() {
+                                sparePartsUsed = value!;
+                                if (!sparePartsUsed) {
+                                  selectedParts.clear();
+                                }
+                              });
+                            },
                           ),
-                        ),
-                      ],
-                    ),
 
-                    const Spacer(),
+                          // Wrap the text with a Consumer / sparePartsAsync
+                          sparePartsAsync.when(
+                            loading: () => const Text(
+                              "Spare Parts Used",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            error: (_, __) => const Text(
+                              "Spare Parts Used",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            data: (response) => Text(
+                              "Spare Parts Used (${response.data.length})",
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
 
-                    // DELETE BUTTON
-                    Container(
-                      height: double.infinity,
-                      width: 60,
-                      decoration: BoxDecoration(
-                        color: AppColors.scoundry_clr,
-                        borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(15),
-                          bottomRight: Radius.circular(15),
-                        ),
+                      const SizedBox(height: 16),
+
+                      /// AVAILABLE PARTS (API)
+                      sparePartsAsync.when(
+                        loading: () =>
+                            const Center(child: CircularProgressIndicator()),
+                        error: (e, _) => Center(child: Text("Error: $e")),
+                        data: (response) {
+                          if (response.data.isEmpty) {
+                            return const Center(
+                              child: Text("No spare parts available"),
+                            );
+                          }
+                          return _availablePartsCard(response.data);
+                        },
                       ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.delete_outline_rounded,
-                          color: Colors.white,
-                          size: 20,
-                        ),
+
+                      const SizedBox(height: 20),
+
+                      const Text(
+                        "Selected parts",
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+
+                      /// SELECTED PARTS LIST (same style logic)
+                      ...selectedParts.map((item) {
+                        int currentCount = partCounts[item.productId.id] ?? 1;
+                        return Container(
+                          height: 70,
+                          margin: const EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.white,
+                          ),
+                          child: Row(
+                            children: [
+                              const SizedBox(width: 16),
+                              Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    width: 1.5,
+                                  ),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: const Icon(Icons.build_outlined),
+                              ),
+                              const SizedBox(width: 12),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item.productId.productName,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+
+                                    children: [
+                                      Text(
+                                        "BHD ${item.productId.price}",
+                                        style: const TextStyle(
+                                          color: AppColors.scoundry_clr,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 30),
+                                      Container(
+                                        height: 27,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.primary_clr,
+                                          borderRadius: BorderRadius.circular(
+                                            30,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            // Minus button
+                                            IconButton(
+                                              padding: EdgeInsets.zero,
+                                              constraints:
+                                                  const BoxConstraints(),
+                                              onPressed: () {
+                                                setState(() {
+                                                  if (currentCount > 1) {
+                                                    partCounts[item
+                                                            .productId
+                                                            .id] =
+                                                        currentCount - 1;
+                                                  }
+                                                });
+                                              },
+                                              icon: const Icon(
+                                                Icons.remove,
+                                                color: Colors.white,
+                                                size: 17,
+                                              ),
+                                            ),
+
+                                            // Count display
+                                            Text(
+                                              "$currentCount",
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+
+                                            // Plus button
+                                            IconButton(
+                                              padding: EdgeInsets.zero,
+                                              constraints:
+                                                  const BoxConstraints(),
+                                              onPressed: () {
+                                                setState(() {
+                                                  partCounts[item
+                                                          .productId
+                                                          .id] =
+                                                      currentCount + 1;
+                                                });
+                                              },
+                                              icon: const Icon(
+                                                Icons.add,
+                                                color: Colors.white,
+                                                size: 17,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+
+                      const SizedBox(height: 20),
+
+                      /// PAYMENT SUMMARY
+                      // _paymentSummaryCard(),
+                    ],
+                  ),
                 ),
               ),
-
-              const SizedBox(height: 20),
-
-              // PAYMENT SUMMARY
-              
-              _paymentSummaryCard(),
-
-               const SizedBox(height: 25),
-               PrimaryButton(
+              const SizedBox(height: 25),
+              PrimaryButton(
                 Width: double.infinity,
                 height: 50,
-                radius: 12, 
+                radius: 12,
                 color: AppColors.scoundry_clr,
-                 onPressed: (){
-
-                 },
-                  text: "Prceed to Payment")
+                text: "Proceed to Payment",
+                onPressed:  _proceedToPayment,
+              ),
             ],
           ),
         ),
@@ -173,8 +329,8 @@ class _SparePartUsedState extends State<SparePartUsed> {
     );
   }
 
-  // AVAILABLE PARTS CARD
-  Widget _availablePartsCard() {
+  /// AVAILABLE PARTS CARD (API DATA)
+  Widget _availablePartsCard(List<Datum> spareParts) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -190,24 +346,28 @@ class _SparePartUsedState extends State<SparePartUsed> {
             itemCount: spareParts.length,
             itemBuilder: (context, index) {
               final item = spareParts[index];
+              final isChecked = selectedParts.contains(item);
+
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
+                padding: const EdgeInsets.symmetric(horizontal: 5),
                 child: Row(
                   children: [
                     Checkbox(
-                      value: item['checked'],
+                      value: isChecked,
                       activeColor: AppColors.scoundry_clr,
-                      onChanged: !isSparePartsUsed
+                      onChanged: !sparePartsUsed
                           ? null
                           : (value) {
                               setState(() {
-                                item['checked'] = value!;
+                                value == true
+                                    ? selectedParts.add(item)
+                                    : selectedParts.remove(item);
                               });
                             },
                     ),
-                    Expanded(child: Text(item['name'])),
+                    Expanded(child: Text(item.productId.productName)),
                     Text(
-                      'BHD ${item['price'].toStringAsFixed(2)}',
+                      "BHD ${item.productId.price}",
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ],
@@ -220,7 +380,7 @@ class _SparePartUsedState extends State<SparePartUsed> {
     );
   }
 
-  // PAYMENT SUMMARY CARD
+  /// PAYMENT SUMMARY CARD (DYNAMIC)
   Widget _paymentSummaryCard() {
     return Container(
       decoration: BoxDecoration(
@@ -231,48 +391,27 @@ class _SparePartUsedState extends State<SparePartUsed> {
       child: Column(
         children: [
           _cardHeader("Payment Summary", AppColors.lightgray_clr),
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            separatorBuilder: (_, __) => const Divider(height: 1),
-            itemCount: paymentlist.length,
-            itemBuilder: (context, index) {
-              final payments = paymentlist[index];
-              final bool isTotal = payments['name'] == "Total";
-              return Container(
-                decoration: BoxDecoration(
-                  color: isTotal
-                      ? AppColors.lightgray_clr.withOpacity(0.2)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(15),
-                    bottomLeft: Radius.circular(15),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text("Total"),
+                Text(
+                  "BHD ${totalAmount.toStringAsFixed(2)}",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primary_clr,
                   ),
                 ),
-
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(payments['name']),
-                    Text(
-                      "BHD ${payments['price']}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: isTotal ? AppColors.primary_clr : Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  //  CARD HEADER
   Widget _cardHeader(String title, Color bgColor) {
     return Container(
       height: 55,

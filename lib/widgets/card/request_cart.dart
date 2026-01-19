@@ -536,7 +536,9 @@ class RequestCart extends StatelessWidget {
   final String feedback;
   final String serviceRequestID;
   final int payment;
+  final String userServiceId;
   final List<Assignment> assignments;
+  final List<String> media;
 
   const RequestCart({
     super.key,
@@ -549,6 +551,8 @@ class RequestCart extends StatelessWidget {
     required this.serviceRequestID,
     required this.assignments,
     required this.payment,
+    required this.media,
+      required this.userServiceId,
   });
 
   String formatDate(String isoDate) {
@@ -609,7 +613,12 @@ class RequestCart extends StatelessWidget {
     );
   }
 
-  Widget _infoRow(String label, String value) {
+  Widget _infoRow(
+    BuildContext context,
+    String label,
+    String value, {
+    List<String>? media,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -619,14 +628,34 @@ class RequestCart extends StatelessWidget {
             label,
             style: TextStyle(color: AppColors.lightgray_clr, fontSize: 12),
           ),
+
           Expanded(
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-              maxLines: 5,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-            ),
+            child: media != null && media.isNotEmpty
+                ? InkWell(
+                    onTap: () {
+                      _showissuseMediaDialog(context, media);
+                    },
+                    child: Text(
+                      value,
+                      textAlign: TextAlign.right,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  )
+                : Text(
+                    value,
+                    textAlign: TextAlign.right,
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
           ),
         ],
       ),
@@ -747,6 +776,119 @@ class RequestCart extends StatelessWidget {
     );
   }
 
+  void _showissuseMediaDialog(BuildContext context, List<String> mediaList) {
+    // Separate images and other media
+    final images = mediaList
+        .where(
+          (media) =>
+              media.endsWith(".jpg") ||
+              media.endsWith(".png") ||
+              media.endsWith(".jpeg") ||
+              media.endsWith(".webp"),
+        )
+        .toList();
+
+    final otherMedia = mediaList
+        .where(
+          (media) =>
+              !media.endsWith(".jpg") &&
+              !media.endsWith(".png") &&
+              !media.endsWith(".jpeg") &&
+              !media.endsWith(".webp"),
+        )
+        .toList();
+
+    final PageController _pageController = PageController();
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Media Files",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 12),
+
+                // Images carousel
+                if (images.isNotEmpty)
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: 200,
+                        child: PageView.builder(
+                          controller: _pageController,
+                          itemCount: images.length,
+                          itemBuilder: (context, index) {
+                            final imgUrl =
+                                "${ImageBaseUrl.baseUrl}/${images[index].trim()}";
+                            return CachedNetworkImage(
+                              imageUrl: imgUrl,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => const SizedBox(
+                                height: 100,
+                                width: 100,
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.broken_image, size: 50),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      SmoothPageIndicator(
+                        controller: _pageController,
+                        count: images.length,
+                        effect: const WormEffect(
+                          dotHeight: 8,
+                          dotWidth: 8,
+                          spacing: 6,
+                          dotColor: Colors.grey,
+                          activeDotColor: Colors.blue,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+                  ),
+
+                // Other media (mp3, mp4)
+                if (otherMedia.isNotEmpty)
+                  SizedBox(
+                    height: 200,
+                    child: ListView.builder(
+                      itemCount: otherMedia.length,
+                      itemBuilder: (context, index) {
+                        final media = otherMedia[index];
+                        return ListTile(
+                          leading: const Icon(Icons.play_circle_fill),
+                          title: Text(media.split('/').last),
+                          onTap: () {
+                            // TODO: Handle video/audio playback
+                          },
+                        );
+                      },
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   String formatWorkDuration(int seconds) {
     final hours = seconds ~/ 3600;
     final minutes = (seconds % 3600) ~/ 60;
@@ -770,17 +912,28 @@ class RequestCart extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    _infoRow("Request ID", serviceRequestID),
+                    _infoRow(context, "Request ID", serviceRequestID),
                     const Divider(),
-                    _infoRow("Service Type", servicetype),
+                    _infoRow(context, "Service Type", servicetype),
                     const Divider(),
-                    _infoRow("Status", assignmentStatus),
+                    _infoRow(context, "Status", assignmentStatus),
                     const Divider(),
-                    _infoRow("Client Name", clientname),
+                    _infoRow(context, "Client Name", clientname),
                     const Divider(),
-                    _infoRow("Scheduled For", formatDate(scheduleService)),
+                    _infoRow(
+                      context,
+                      "Scheduled For",
+                      formatDate(scheduleService),
+                    ),
                     const Divider(),
-                    _infoRow("Created On", formatDate(createdAt)),
+                    _infoRow(
+                      context,
+                      "View Media",
+                      "Tap to view",
+                      media: media,
+                    ),
+                    const Divider(),
+                    _infoRow(context, "Created On", formatDate(createdAt)),
                     const Divider(),
                     Align(
                       alignment: Alignment.centerLeft,
@@ -869,17 +1022,19 @@ class RequestCart extends StatelessWidget {
                     child: Column(
                       children: [
                         _infoRow(
+                          context,
                           "Time durartion :",
                           '${formatWorkDuration(assignment.workDuration)}',
                         ),
 
                         const Divider(),
                         _infoRow(
+                          context,
                           "Description :",
                           '${(assignment.notes) ?? "_"}',
                         ),
 
-                       const Divider(),
+                        const Divider(),
                         // View Fixed Media Row
                         if (assignmentMedia.isNotEmpty)
                           Row(
@@ -897,7 +1052,7 @@ class RequestCart extends StatelessWidget {
                                 onTap: () =>
                                     _showMediaDialog(context, assignmentMedia),
                                 child: const Text(
-                                   "Tap to view",
+                                  "Tap to view",
                                   style: TextStyle(
                                     color: Colors.blue,
                                     decoration: TextDecoration.underline,

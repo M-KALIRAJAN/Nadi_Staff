@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/rendering.dart';
+
 import 'package:tech_app/core/network/dio_client.dart';
 
 class AcceptrequestService {
@@ -7,19 +7,20 @@ class AcceptrequestService {
 
   Future<Map<String, dynamic>?> acceptrequest(
     String assignmentId,
+    String action, String? reason
    
   ) async {
+
     try {
-      final action ="accept";
+      
       final response = await _dio.post(
         'user-service-list/technician-respond',
         data: {
           "assignmentId":assignmentId,
-          "action":action
+          "action":action,
+          "reason": reason
         }
         );
-      
-
       return response.data;
     } on DioException catch (e) {
 

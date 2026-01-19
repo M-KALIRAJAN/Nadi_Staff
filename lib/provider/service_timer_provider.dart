@@ -22,10 +22,8 @@ class ServiceTimerNotifier extends Notifier<ServiceTimerState> {
       startTime: startTime,
       isRunning: true,
     );
-
     _ticker?.cancel();
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
-      // 🔥 force rebuild every second
       state = state.copyWith();
     });
   }
@@ -52,4 +50,5 @@ class ServiceTimerNotifier extends Notifier<ServiceTimerState> {
 final serviceTimerProvider =
     NotifierProvider<ServiceTimerNotifier, ServiceTimerState>(
   ServiceTimerNotifier.new,
+
 );

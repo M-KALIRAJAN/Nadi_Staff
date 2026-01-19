@@ -179,7 +179,6 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
                   ),
                   text:
                       " ${DateFormat('MMM dd yyyy').format(assignment!.updatedAt!)}",
-                 
                 ),
 
                 const SizedBox(height: 8),
@@ -198,7 +197,7 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
                         ),
                       ),
                     ],
-const SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 14,

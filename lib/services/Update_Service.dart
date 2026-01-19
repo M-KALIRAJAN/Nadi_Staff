@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+
 import 'package:tech_app/core/network/dio_client.dart';
 
 class UpdateService {

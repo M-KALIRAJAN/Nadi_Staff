@@ -120,6 +120,7 @@ Future<void> submitrequest() async {
                 radius: 12,
                 color: AppColors.scoundry_clr,
                 height: 55,
+                  isLoading: isLoading,
                 Width: double.infinity,
                 onPressed: () {
                    submitrequest();

@@ -4,7 +4,6 @@ import 'package:tech_app/controllers/Auth_Controllers.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/core/utils/snackbar_helper.dart';
 import 'package:tech_app/routes/route_name.dart';
-import 'package:tech_app/view/bottom_nav.dart';
 import 'package:tech_app/widgets/inputs/app_text_field.dart';
 import 'package:tech_app/widgets/inputs/primary_button.dart';
 
@@ -61,7 +60,7 @@ class _LoginViewState extends State<LoginView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 20),
+                        SizedBox(height: 10),
                         Text(
                           "Welcome!",
                           style: TextStyle(fontWeight: FontWeight.bold),
@@ -81,7 +80,7 @@ class _LoginViewState extends State<LoginView> {
                           controller: _authcontroller.pasword,
                           validator: _authcontroller.validatePassword,
                         ),
-                        SizedBox(height: 20),
+                       
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -109,7 +108,7 @@ class _LoginViewState extends State<LoginView> {
                           ],
                         ),
 
-                        SizedBox(height: 20),
+                        SizedBox(height: 10),
 
                         PrimaryButton(
                           height: 48,

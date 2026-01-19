@@ -6,8 +6,6 @@ import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/model/StatusFilter_Model.dart';
 import 'package:tech_app/provider/service_list_provider.dart';
 import 'package:tech_app/routes/route_name.dart';
-import 'package:tech_app/view/update_request.dart';
-import 'package:tech_app/view/update_request_view.dart';
 import 'package:tech_app/widgets/card/income_cart.dart';
 import 'package:tech_app/widgets/card/shimmer_loader.dart';
 import 'package:flutter_svg/flutter_svg.dart';

@@ -26,10 +26,13 @@ final Approute = GoRouter(
           path: RouteName.inventory_list,
           builder: (context, state) => const MaterialInventoryView(),
           ),
-           GoRoute(
-          path: RouteName.sparepart_used,
-          builder: (context, state) => const SparePartUsed(),
-          ),
+GoRoute(
+  path: RouteName.sparepart_used,
+  builder: (context, state) {
+    final String userServiceId = state.extra as String;
+    return SparePartUsed(userServiceId: userServiceId); // or fetch your Datum by ID
+  },
+),
         GoRoute(
           path: RouteName.bulk_request,
           builder: (context, state) => const BulkRequest(),
