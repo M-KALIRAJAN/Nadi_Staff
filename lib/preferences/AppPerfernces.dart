@@ -6,6 +6,7 @@ import 'package:tech_app/model/TechnicianProfile_Model.dart';
 class Appperfernces {
   static const String _tokenKey = "auth_token";
   static const String _profileKey = "technician_profile";
+  static const String _loginKey = "is_logged_in";
 
   // ==== TOKEN ====
   static Future<void> saveToken(String token) async {
@@ -18,10 +19,21 @@ class Appperfernces {
     return prefs.getString(_tokenKey);
   }
 
+    // ================== LOGIN FLAG ==================
+  static Future<void> setLoggedIn(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_loginKey, value);
+  }
+
+  static Future<bool> isLoggedIn() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_loginKey) ?? false;
+  }
+
   // === PROFILE ===
   static Future<void> saveProfiledata(TechnicianProfile profile) async {
     final prefs = await SharedPreferences.getInstance();
-    final profileJson = json.encode(profile.toJson());
+    final profileJson = json.encode(profile);
     await prefs.setString(_profileKey, profileJson);
   }
 

@@ -35,7 +35,7 @@ Future<ServiceListModel?> fetchServiceByStatus(String status) async {
   }
 }
 
-  void refresh() {}
+  
 
 }
 

@@ -42,15 +42,14 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
   final List<Map<String, dynamic>> status = [
     {"title": "Accepted"},
     {"title": "In Progress"},
-    {"title": "OnHold"},
     {"title": "completed"},
   ];
-  bool get isCompletedSelected => selectedIndexes.contains(3);
+  bool get isCompletedSelected => selectedIndexes.contains(2);
   @override
   void initState() {
     super.initState();
     selectedIndexes = {0, 1}; // Always selected
-    // 🔥 START GLOBAL TIMER
+    //  START GLOBAL TIMER
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(serviceTimerProvider.notifier).start();
     });
@@ -144,6 +143,7 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
         }
       },
       child: Container(
+        color: AppColors.background_clr,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
@@ -158,13 +158,16 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
                 ),
                 child: Center(
                   child: Text(
-                    widget.serviceRequestId,
+                    widget.serviceRequestId.toUpperCase(),
                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
                   ),
                 ),
               ),
               const SizedBox(height: 10),
-              const Text("Timer"),
+              const Text(
+                "Timer:",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
               const SizedBox(height: 10),
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -221,7 +224,10 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
               ),
 
               const SizedBox(height: 10),
-              const Text("Updated Status"),
+              const Text(
+                "Updated Status:",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
               const SizedBox(height: 10),
               GridView.builder(
                 shrinkWrap: true,
@@ -278,7 +284,10 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
               ),
 
               const SizedBox(height: 15),
-              const Text("Add Notes"),
+              const Text(
+                "Add Notes:",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
               const SizedBox(height: 15),
               AppTextField(
                 maxLines: 3,
@@ -286,8 +295,21 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
                 label: "description",
               ),
               const SizedBox(height: 15),
-              const Text("Media Upload"),
-              const SizedBox(height: 25),
+
+              const Text(
+                "Media Upload (optional):",
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                "${selectedImages.length} / 10 images selected",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: selectedImages.length == 10 ? Colors.red : Colors.grey,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 10),
               // UPLOAD BUTTON
               MediaUploadWidget(
                 images: selectedImages,

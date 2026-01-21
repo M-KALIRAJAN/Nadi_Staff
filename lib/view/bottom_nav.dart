@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
-import 'package:tech_app/view/bulk_request.dart';
+import 'package:tech_app/view/My_Request_List.dart';
 import 'package:tech_app/view/home_view.dart';
-import 'package:tech_app/view/livechat_view.dart';
 import 'package:tech_app/view/material_inventory_view.dart';
-import 'package:tech_app/view/my_request_view.dart';
 import 'package:tech_app/view/profile_view.dart';
-import 'package:tech_app/view/spare_part_used.dart';
-import 'package:tech_app/view/update_request_view.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({super.key});
@@ -27,9 +24,8 @@ class _BottomNavState extends State<BottomNav> {
     super.initState();
     screens = [
       () => HomeView(),
-
       () => MaterialInventoryView(),
-      // () => SparePartUsed(),
+      () => MyRequestList(),
       () => ProfileView(),
     ];
   }
@@ -58,7 +54,9 @@ class _BottomNavState extends State<BottomNav> {
           );
           return false; // prevent exit
         }
-        return true; // exit app
+        // Exit the app
+        SystemNavigator.pop();
+        return true;
       },
       child: Scaffold(
         body: screens[_selectedIndex](),
@@ -104,7 +102,7 @@ class _BottomNavState extends State<BottomNav> {
                     AssetImage("assets/icons/home.png"),
                     size: 26,
                   ),
-                  label: "Requests",
+                  label: "Home",
                 ),
 
                 BottomNavigationBarItem(
@@ -127,7 +125,7 @@ class _BottomNavState extends State<BottomNav> {
                     AssetImage("assets/icons/services.png"),
                     size: 27,
                   ),
-                  label: "Active Tasks",
+                  label: "Request List",
                 ),
                 BottomNavigationBarItem(
                   icon: ImageIcon(

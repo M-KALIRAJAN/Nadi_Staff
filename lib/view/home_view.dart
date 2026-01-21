@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
@@ -40,6 +41,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
     }
 
     return Scaffold(
+        backgroundColor: AppColors.background_clr,
       body: SafeArea(
         child: Column(
           children: [
@@ -161,85 +163,104 @@ class _HomeViewState extends ConsumerState<HomeView> {
                     );
                   }
 
-                  return ListView.builder(
-                    itemCount: data.data.length,
-                    itemBuilder: (context, index) {
-                      final item = data.data[index];
+                  return AnimationLimiter(
+                    child: ListView.builder(
+                      itemCount: data.data.length,
+                      itemBuilder: (context, index) {
+                        final item = data.data[index];
 
-                      // Choose widget based on serviceStatus
-                      if (item.assignmentStatus.toLowerCase() == 'completed') {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 10,
-                          ),
-                          child: IncomeCard(
-                            name: item.userId.basicInfo.fullName,
-                            service: item.serviceId.name,
-                            issue: item.issuesId.issue,
-                            assignments:
-                                item.technicianUserService?.assignments ?? [],
-                            // status: item.serviceStatus,
-                            payment: item.payment,
+                        // Choose widget based on serviceStatus
+                        if (item.assignmentStatus.toLowerCase() ==
+                            'completed') {
+                          return AnimationConfiguration.staggeredList(
+                            position: index,
+                            duration: const Duration(milliseconds: 1000),
+                            child: SlideAnimation(
+                              verticalOffset: 40,
+                              curve: Curves.easeOutCubic,
+                              child: FadeInAnimation(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 15,
+                                    vertical: 10,
+                                  ),
+                                  child: IncomeCard(
+                                    name: item.userId.basicInfo.fullName,
+                                    service: item.serviceId.name,
+                                    issue: item.issuesId.issue,
+                                    assignments:
+                                        item
+                                            .technicianUserService
+                                            ?.assignments ??
+                                        [],
+                                    // status: item.serviceStatus,
+                                    payment: item.payment,
 
-                            assignmentStatus: item.assignmentStatus,
-                            onClick: () {
-                              context.push(
-                                RouteName.service_card,
-                                extra: item, // send the full item to next page
-                              );
-                            },
-                          ),
-                        );
-                      } else if (item.assignmentStatus.toLowerCase() ==
-                          'in-progress') {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 10,
-                          ),
-                          child: IncomeCard(
-                            name: item.userId.basicInfo.fullName,
-                            service: item.serviceId.name,
-                            issue: item.issuesId.issue,
-                            schedule: formatDate(item.scheduleService),
-                            // status: item.serviceStatus,
-                            assignmentStatus: item.assignmentStatus,
-                            assignments:
-                                item.technicianUserService?.assignments ?? [],
-                            onClick: () {
-                              context.push(
-                                RouteName.service_card,
-                                extra: item, // send the full item to next page
-                              );
-                            },
-                          ),
-                        );
-                      } else {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 10,
-                          ),
-                          child: IncomeCard(
-                            name: item.userId.basicInfo.fullName,
-                            service: item.serviceId.name,
-                            issue: item.issuesId.issue,
-                            schedule: formatDate(item.scheduleService),
-                            // status: item.serviceStatus,
-                            assignmentStatus: item.assignmentStatus,
-                            assignments:
-                                item.technicianUserService?.assignments ?? [],
-                            onClick: () {
-                              context.push(
-                                RouteName.service_card,
-                                extra: item, // send the full item to next page
-                              );
-                            },
-                          ),
-                        );
-                      }
-                    },
+                                    assignmentStatus: item.assignmentStatus,
+                                    onClick: () {
+                                      context.push(
+                                        RouteName.service_card,
+                                        extra:
+                                            item, // send the full item to next page
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        } else if (item.assignmentStatus.toLowerCase() ==
+                            'in-progress') {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 10,
+                            ),
+                            child: IncomeCard(
+                              name: item.userId.basicInfo.fullName,
+                              service: item.serviceId.name,
+                              issue: item.issuesId.issue,
+                              schedule: formatDate(item.scheduleService),
+                              // status: item.serviceStatus,
+                              assignmentStatus: item.assignmentStatus,
+                              assignments:
+                                  item.technicianUserService?.assignments ?? [],
+                              onClick: () {
+                                context.push(
+                                  RouteName.service_card,
+                                  extra:
+                                      item, // send the full item to next page
+                                );
+                              },
+                            ),
+                          );
+                        } else {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 10,
+                            ),
+                            child: IncomeCard(
+                              name: item.userId.basicInfo.fullName,
+                              service: item.serviceId.name,
+                              issue: item.issuesId.issue,
+                              schedule: formatDate(item.scheduleService),
+                              // status: item.serviceStatus,
+                              assignmentStatus: item.assignmentStatus,
+                              assignments:
+                                  item.technicianUserService?.assignments ?? [],
+                              onClick: () {
+                                context.push(
+                                  RouteName.service_card,
+                                  extra:
+                                      item, // send the full item to next page
+                                );
+                              },
+                            ),
+                          );
+                        }
+                      },
+                    ),
                   );
                 },
                 loading: () => ListView.builder(
@@ -261,6 +282,4 @@ class _HomeViewState extends ConsumerState<HomeView> {
       ),
     );
   }
-
- 
 }

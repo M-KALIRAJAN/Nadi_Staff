@@ -74,12 +74,12 @@ class _SparePartUsedState extends ConsumerState<SparePartUsed> {
         // call API
         await ref
             .read(updatePaymentServiceProvider)
-            .passupdatepayment(updatePayment); 
+            .passupdatepayment(updatePayment);
 
-              // 🔥 REFRESH SERVICE LIST API
-  ref.invalidate(serviceListProvider);
+        // 🔥 REFRESH SERVICE LIST API
+        ref.invalidate(serviceListProvider);
 
-        context.push(RouteName.bottom_nav);
+        context.go(RouteName.bottom_nav);
         // reset after success
         setState(() {
           partCounts.clear();
@@ -102,227 +102,249 @@ class _SparePartUsedState extends ConsumerState<SparePartUsed> {
       }
     }
 
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      /// MAIN CHECKBOX
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: sparePartsUsed,
-                            activeColor: AppColors.scoundry_clr,
-                            onChanged: (value) {
-                              setState(() {
-                                sparePartsUsed = value!;
-                                if (!sparePartsUsed) {
-                                  selectedParts.clear();
-                                }
-                              });
-                            },
-                          ),
+    return PopScope(
+      canPop: false,
 
-                          // Wrap the text with a Consumer / sparePartsAsync
-                          sparePartsAsync.when(
-                            loading: () => const Text(
-                              "Spare Parts Used",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
+      child: Scaffold(
+        backgroundColor: AppColors.background_clr,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        /// MAIN CHECKBOX
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: sparePartsUsed,
+                              activeColor: AppColors.scoundry_clr,
+                              onChanged: (value) {
+                                setState(() {
+                                  sparePartsUsed = value!;
+                                  if (!sparePartsUsed) {
+                                    selectedParts.clear();
+                                  }
+                                });
+                              },
                             ),
-                            error: (_, __) => const Text(
-                              "Spare Parts Used",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            data: (response) => Text(
-                              "Spare Parts Used (${response.data.length})",
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
 
-                      const SizedBox(height: 16),
-
-                      /// AVAILABLE PARTS (API)
-                      sparePartsAsync.when(
-                        loading: () =>
-                            const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => Center(child: Text("Error: $e")),
-                        data: (response) {
-                          if (response.data.isEmpty) {
-                            return const Center(
-                              child: Text("No spare parts available"),
-                            );
-                          }
-                          return _availablePartsCard(response.data);
-                        },
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      const Text(
-                        "Selected parts",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 20),
-
-                      /// SELECTED PARTS LIST (same style logic)
-                      ...selectedParts.map((item) {
-                        int currentCount = partCounts[item.productId.id] ?? 1;
-                        return Container(
-                          height: 70,
-                          margin: const EdgeInsets.only(bottom: 10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Colors.white,
-                          ),
-                          child: Row(
-                            children: [
-                              const SizedBox(width: 16),
-                              Container(
-                                height: 50,
-                                width: 50,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    width: 1.5,
-                                  ),
-                                  borderRadius: BorderRadius.circular(15),
+                            // Wrap the text with a Consumer / sparePartsAsync
+                            sparePartsAsync.when(
+                              loading: () => const Text(
+                                "Spare Parts Used",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                                child: const Icon(Icons.build_outlined),
                               ),
-                              const SizedBox(width: 12),
-                              Column(
+                              error: (_, __) => const Text(
+                                "Spare Parts Used",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              data: (response) => Text(
+                                "Spare Parts Used (${response.data.length})",
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        /// AVAILABLE PARTS (API)
+                        sparePartsAsync.when(
+                          loading: () =>
+                              const Center(child: CircularProgressIndicator()),
+                          error: (e, _) => Center(child: Text("Error: $e")),
+                          data: (response) {
+                            if (response.data.isEmpty) {
+                              return Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
+                                  Image.asset(
+                                    "assets/images/Outofstock.png",
+                                    height: 100,
+                                    fit: BoxFit.contain,
+                                  ),
+                                  const SizedBox(height: 12),
                                   Text(
-                                    item.productId.productName,
-                                    style: const TextStyle(
+                                    "No spare parts available",
+                                    style: TextStyle(
+                                      fontSize: 16,
                                       fontWeight: FontWeight.w500,
+                                      color: Color.fromRGBO(13, 95, 72, 1),
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                ],
+                              );
+                            }
+                            return _availablePartsCard(response.data);
+                          },
+                        ),
 
-                                    children: [
-                                      Text(
-                                        "BHD ${item.productId.price}",
-                                        style: const TextStyle(
-                                          color: AppColors.scoundry_clr,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                        const SizedBox(height: 20),
+
+                        const Text(
+                          "Selected parts",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 20),
+
+                        /// SELECTED PARTS LIST (same style logic)
+                        ...selectedParts.map((item) {
+                          int currentCount = partCounts[item.productId.id] ?? 1;
+                          return Container(
+                            height: 70,
+                            margin: const EdgeInsets.only(bottom: 10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: Colors.white,
+                            ),
+                            child: Row(
+                              children: [
+                                const SizedBox(width: 16),
+                                Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      width: 1.5,
+                                    ),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: const Icon(Icons.build_outlined),
+                                ),
+                                const SizedBox(width: 12),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item.productId.productName,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w500,
                                       ),
-                                      const SizedBox(width: 30),
-                                      Container(
-                                        height: 27,
-                                        decoration: BoxDecoration(
-                                          color: AppColors.primary_clr,
-                                          borderRadius: BorderRadius.circular(
-                                            30,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+
+                                      children: [
+                                        Text(
+                                          "BHD ${item.productId.price}",
+                                          style: const TextStyle(
+                                            color: AppColors.scoundry_clr,
+                                            fontWeight: FontWeight.w600,
                                           ),
                                         ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            // Minus button
-                                            IconButton(
-                                              padding: EdgeInsets.zero,
-                                              constraints:
-                                                  const BoxConstraints(),
-                                              onPressed: () {
-                                                setState(() {
-                                                  if (currentCount > 1) {
+                                        const SizedBox(width: 30),
+                                        Container(
+                                          height: 27,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.primary_clr,
+                                            borderRadius: BorderRadius.circular(
+                                              30,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              // Minus button
+                                              IconButton(
+                                                padding: EdgeInsets.zero,
+                                                constraints:
+                                                    const BoxConstraints(),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    if (currentCount > 1) {
+                                                      partCounts[item
+                                                              .productId
+                                                              .id] =
+                                                          currentCount - 1;
+                                                    }
+                                                  });
+                                                },
+                                                icon: const Icon(
+                                                  Icons.remove,
+                                                  color: Colors.white,
+                                                  size: 17,
+                                                ),
+                                              ),
+
+                                              // Count display
+                                              Text(
+                                                "$currentCount",
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+
+                                              // Plus button
+                                              IconButton(
+                                                padding: EdgeInsets.zero,
+                                                constraints:
+                                                    const BoxConstraints(),
+                                                onPressed: () {
+                                                  setState(() {
                                                     partCounts[item
                                                             .productId
                                                             .id] =
-                                                        currentCount - 1;
-                                                  }
-                                                });
-                                              },
-                                              icon: const Icon(
-                                                Icons.remove,
-                                                color: Colors.white,
-                                                size: 17,
+                                                        currentCount + 1;
+                                                  });
+                                                },
+                                                icon: const Icon(
+                                                  Icons.add,
+                                                  color: Colors.white,
+                                                  size: 17,
+                                                ),
                                               ),
-                                            ),
-
-                                            // Count display
-                                            Text(
-                                              "$currentCount",
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-
-                                            // Plus button
-                                            IconButton(
-                                              padding: EdgeInsets.zero,
-                                              constraints:
-                                                  const BoxConstraints(),
-                                              onPressed: () {
-                                                setState(() {
-                                                  partCounts[item
-                                                          .productId
-                                                          .id] =
-                                                      currentCount + 1;
-                                                });
-                                              },
-                                              icon: const Icon(
-                                                Icons.add,
-                                                color: Colors.white,
-                                                size: 17,
-                                              ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
 
-                      const SizedBox(height: 20),
+                        const SizedBox(height: 20),
 
-                      /// PAYMENT SUMMARY
-                      // _paymentSummaryCard(),
-                    ],
+                        /// PAYMENT SUMMARY
+                        // _paymentSummaryCard(),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 25),
-              PrimaryButton(
-                Width: double.infinity,
-                height: 50,
-                radius: 12,
-                color: AppColors.scoundry_clr,
-                text: "Proceed to Payment",
-                onPressed:  _proceedToPayment,
-              ),
-            ],
+                const SizedBox(height: 25),
+                PrimaryButton(
+                  Width: double.infinity,
+                  height: 50,
+                  radius: 12,
+                  color: AppColors.scoundry_clr,
+                  text: "Proceed to Payment",
+                  onPressed: _proceedToPayment,
+                ),
+              ],
+            ),
           ),
         ),
       ),

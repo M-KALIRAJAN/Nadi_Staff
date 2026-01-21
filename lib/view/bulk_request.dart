@@ -18,7 +18,6 @@ class BulkRequest extends StatefulWidget {
 }
 
 class _BulkRequestState extends State<BulkRequest> {
-
   final Productlist _productlist = Productlist();
   bool isLoading = false;
   List<Product> products = []; // master product list
@@ -26,9 +25,9 @@ class _BulkRequestState extends State<BulkRequest> {
   final MaterialrequestService _materialrequestService =
       MaterialrequestService();
 
-List<MaterialSelection> materialSelections = [
-  MaterialSelection(quantityController: TextEditingController()),
-];
+  List<MaterialSelection> materialSelections = [
+    MaterialSelection(quantityController: TextEditingController()),
+  ];
 
   @override
   void initState() {
@@ -42,52 +41,49 @@ List<MaterialSelection> materialSelections = [
       products = result;
     });
   }
-Future<void> submitrequest() async {
-  try {
-    setState(() => isLoading = true);
 
-    final List<Map<String, dynamic>> requests = [];
+  Future<void> submitrequest() async {
+    try {
+      setState(() => isLoading = true);
 
-    for (final item in materialSelections) {
-      if (item.product == null ||
-          item.quantityController.text.isEmpty) {
-        throw "Please fill all materials";
+      final List<Map<String, dynamic>> requests = [];
+
+      for (final item in materialSelections) {
+        if (item.product == null || item.quantityController.text.isEmpty) {
+          throw "Please fill all materials";
+        }
+
+        requests.add({
+          "productId": item.product!.id,
+          "quantity": int.parse(item.quantityController.text),
+        });
       }
 
-      requests.add({
-        "productId": item.product!.id,
-        "quantity": int.parse(item.quantityController.text),
-      });
+      final payload = {"requests": requests};
+
+      await _materialrequestService.fetchmaterialrequest(payload: payload);
+
+      SnackbarHelper.show(
+        context,
+        backgroundColor: AppColors.scoundry_clr,
+        message: "Material requests submitted successfully",
+      );
+      context.push(RouteName.inventory_list);
+    } catch (e) {
+      SnackbarHelper.show(
+        context,
+        backgroundColor: Colors.red,
+        message: e.toString(),
+      );
+    } finally {
+      setState(() => isLoading = false);
     }
-
-    final payload = {
-      "requests": requests,
-    };
-
-    await _materialrequestService.fetchmaterialrequest(
-      payload: payload,
-    );
-
-    SnackbarHelper.show(
-      context,
-      backgroundColor: AppColors.scoundry_clr,
-      message: "Material requests submitted successfully",
-    );
-     context.push(RouteName.inventory_list);
-  } catch (e) {
-    SnackbarHelper.show(
-      context,
-      backgroundColor: Colors.red,
-      message: e.toString(),
-    );
-  } finally {
-    setState(() => isLoading = false);
   }
-}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background_clr,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(12),
@@ -103,30 +99,29 @@ Future<void> submitrequest() async {
                 height: 55,
                 Width: double.infinity,
                 onPressed: () {
-  setState(() {
-    materialSelections.add(
-      MaterialSelection(
-        quantityController: TextEditingController(),
-      ),
-    );
-  });
-},
+                  setState(() {
+                    materialSelections.add(
+                      MaterialSelection(
+                        quantityController: TextEditingController(),
+                      ),
+                    );
+                  });
+                },
 
                 text: "Add New Material",
-                 icon: Icon(Icons.add ,size: 25,color: Colors.white,),
+                icon: Icon(Icons.add, size: 25, color: Colors.white),
               ),
-              const SizedBox(height: 10,),
-               PrimaryButton(
+              const SizedBox(height: 10),
+              PrimaryButton(
                 radius: 12,
                 color: AppColors.scoundry_clr,
                 height: 55,
-                  isLoading: isLoading,
+                isLoading: isLoading,
                 Width: double.infinity,
                 onPressed: () {
-                   submitrequest();
+                  submitrequest();
                 },
                 text: "Submit Request",
-                
               ),
             ],
           ),
@@ -136,7 +131,7 @@ Future<void> submitrequest() async {
   }
 
   Widget materialCard(int index) {
-     final selection = materialSelections[index];
+    final selection = materialSelections[index];
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       width: double.infinity,
@@ -173,7 +168,7 @@ Future<void> submitrequest() async {
                     icon: const Icon(Icons.cancel, color: Colors.white),
                     onPressed: () {
                       setState(() {
-                        materialSelections.removeAt(index); // ✅ remove card
+                        materialSelections.removeAt(index); //  remove card
                       });
                     },
                   ),
@@ -197,10 +192,9 @@ Future<void> submitrequest() async {
                     final product = products.firstWhere(
                       (e) => e.productName == value,
                     );
-                     setState(() {
-              selection.product = product;
-            });
-                   
+                    setState(() {
+                      selection.product = product;
+                    });
                   },
                   validator: (value) =>
                       value == null ? "Please select product" : null,
@@ -212,8 +206,8 @@ Future<void> submitrequest() async {
 
                 AppTextField(
                   label: "e.g 25",
-                     controller: selection.quantityController,
-                    keyboardType: TextInputType.number,
+                  controller: selection.quantityController,
+                  keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "Enter quantity";
@@ -228,17 +222,11 @@ Future<void> submitrequest() async {
       ),
     );
   }
-
-  
 }
 
 class MaterialSelection {
   Product? product;
   TextEditingController quantityController;
 
-  MaterialSelection({
-    this.product,
-    required this.quantityController,
-  });
+  MaterialSelection({this.product, required this.quantityController});
 }
-

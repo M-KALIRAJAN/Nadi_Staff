@@ -13,17 +13,28 @@ class AuthService {
         "technician/login",
         data: authmodel.toJson(),
       );
-     
-    final  token = response.data['token'];
-    if(token != null){
-  await Appperfernces.saveToken(token);
-    }
-  
+
+      final token = response.data['token'];
+      if (token != null) {
+        await Appperfernces.saveToken(token);
+      }
+
       return response.data;
     } on DioException catch (e) {
-      final message =
-          e.response?.data['message']?.toString() ?? "Login failed";
+      final message = e.response?.data['message']?.toString() ?? "Login failed";
       throw message; // will be caught in controller
+    }
+  }
+
+  Future<Map<String, dynamic>> updatepassword({required String email}) async {
+    try {
+      final response = await _dio.post(
+        'technician/forgot-password',
+        data: {"email": email},
+      );
+      return response.data;
+    } on DioException catch (e) {
+      throw e.response?.data['message'] ?? "someting went wrong ";
     }
   }
 }

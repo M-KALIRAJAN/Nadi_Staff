@@ -1,4 +1,5 @@
 class RouteName {
+  static const String splash ='/splash';
   static const String login = "/login";
   static const String bottom_nav = "/bottom-nav";
   static const String bulk_request = "/bulk_request";
@@ -7,4 +8,6 @@ class RouteName {
   static const String updated_status = "/updated_status";
   static const String inventory_list = "/inventory_list";
   static const String sparepart_used = "/sparepart_used";
+  static const String editprofile = "/editprofile";
+  static const String forgotpassword= "/forgotpassword";
 }

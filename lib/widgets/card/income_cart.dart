@@ -184,7 +184,7 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    if (assignment?.status == "completed") ...[
+                    if (assignment.status == "completed") ...[
                       _iconBox(
                         image: Image.asset("assets/images/clock.png"),
                         bgColor: const Color.fromARGB(156, 169, 227, 212),
@@ -212,7 +212,7 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
                         borderRadius: BorderRadius.circular(30),
                       ),
                       child: Text(
-                        assignmentStatus,
+                        assignmentStatus.toUpperCase(),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 12,

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
@@ -14,23 +15,20 @@ import 'package:tech_app/widgets/card/request_cart.dart';
 import 'package:tech_app/widgets/inputs/primary_button.dart';
 import 'package:tech_app/model/ServiceList _Model.dart';
 
-class ServicerequestCart extends StatefulWidget {
-  final Datum data; // 👈 Strong type
+class ServicerequestCart extends ConsumerStatefulWidget {
+  final Datum data;
 
   const ServicerequestCart({super.key, required this.data});
 
   @override
-  State<ServicerequestCart> createState() => _ServicerequestCartState();
+  ConsumerState<ServicerequestCart> createState() => _ServicerequestCartState();
 }
 
-class _ServicerequestCartState extends State<ServicerequestCart> {
+class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
   final AcceptrequestService _acceptrequestService = AcceptrequestService();
   final StartworkService _startwork = StartworkService();
 
-  Future<void> acceptrequest({
-    required String status,
-    String? reason,
-  }) async {
+  Future<void> acceptrequest({required String status, String? reason}) async {
     try {
       final assignmentId = widget.data.id;
       final result = await _acceptrequestService.acceptrequest(
@@ -44,9 +42,9 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
         backgroundColor: AppColors.scoundry_clr,
         message: status == "accept" ? "Service Accepted" : "Service Rejected",
       );
-  //              // 🔥 REFRESH SERVICE LIST API
-  // ref.invalidate(serviceListProvider);
-      context.pop(); // close screen if needed
+      //   REFRESH SERVICE LIST API
+      ref.invalidate(serviceListProvider);
+      context.pop();
     } catch (e) {
       SnackbarHelper.show(
         context,
@@ -58,14 +56,18 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
 
   // ✅ Start Work
   Future<void> startwork() async {
-    final userServiceId = widget.data.id;
     try {
-      final result = await _startwork.fetchstartwork(userServiceId);
+      await _startwork.fetchstartwork(widget.data.id);
+
       SnackbarHelper.show(
         context,
         backgroundColor: AppColors.scoundry_clr,
         message: "Start Work",
       );
+
+      //  REFRESH SERVICE LIST
+      ref.invalidate(serviceListProvider);
+
       context.pop();
     } catch (e) {
       SnackbarHelper.show(
@@ -139,14 +141,14 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
               // COMPLETED SERVICE
               if (widget.data.assignmentStatus == "completed") ...[
                 RequestCart(
-                   userServiceId: widget.data.id,
+                  userServiceId: widget.data.id,
                   clientname: widget.data.userId.basicInfo.fullName,
                   serviceRequestID: widget.data.serviceRequestId,
                   servicetype: widget.data.serviceId.name,
                   assignmentStatus: widget.data.assignmentStatus,
-                  scheduleService: widget.data.scheduleService
-                      .toIso8601String(),
-                  createdAt: widget.data.createdAt.toIso8601String(),
+                  scheduleService: widget.data.scheduleService,
+                  status: widget.data.serviceStatus,
+                  createdAt: widget.data.createdAt,
                   feedback: widget.data.feedback ?? '',
                   payment: widget.data.payment,
                   media: widget.data.media,
@@ -323,6 +325,8 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
                 const Divider(),
                 _infoRow("Description", widget.data.feedback ?? ""),
                 const Divider(),
+                _infoRow("Status", widget.data.assignmentStatus, isStatus: true),
+                const Divider(),
                 _infoRow("View Media", "Tap to view", media: widget.data.media),
                 const Divider(),
                 _infoRow(
@@ -344,7 +348,39 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
     );
   }
 
-  Widget _infoRow(String label, String value, {List<String>? media}) {
+  Color _statusBgColor(String status) {
+    switch (status.toLowerCase()) {
+      case "accepted":
+        return Colors.green.shade100;
+      case "pending":
+        return Colors.orange.shade100;
+      case "rejected":
+        return Colors.red.shade100;
+      default:
+        return Colors.grey.shade200;
+    }
+  }
+
+  Color _statusTextColor(String status) {
+    switch (status.toLowerCase()) {
+      case "accepted":
+        return Colors.green;
+      case "pending":
+        return Colors.orange;
+      case "rejected":
+        return Colors.red;
+
+      default:
+        return Colors.grey;
+    }
+  }
+
+  Widget _infoRow(
+    String label,
+    String value, {
+    List<String>? media,
+    bool isStatus = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -355,32 +391,53 @@ class _ServicerequestCartState extends State<ServicerequestCart> {
             style: TextStyle(color: AppColors.lightgray_clr, fontSize: 12),
           ),
           Expanded(
-            child: media != null && media.isNotEmpty
-                ? InkWell(
-                    onTap: () {
-                      _showMediaDialog(context, media);
-                    },
-                    child: Text(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: media != null && media.isNotEmpty
+                  ? InkWell(
+                      onTap: () {
+                        _showMediaDialog(context, media);
+                      },
+                      child: Text(
+                        value,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    )
+                  : isStatus
+                  ? Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _statusBgColor(value),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        value.toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: _statusTextColor(value),
+                        ),
+                      ),
+                    )
+                  : Text(
                       value,
                       textAlign: TextAlign.right,
+                      maxLines: 5,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline,
                       ),
                     ),
-                  )
-                : Text(
-                    value,
-                    textAlign: TextAlign.right,
-                    maxLines: 5,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+            ),
           ),
         ],
       ),

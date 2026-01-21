@@ -1,60 +1,87 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/core/network/dio_client.dart';
+import 'package:tech_app/core/utils/snackbar_helper.dart';
 import 'package:tech_app/model/TechnicianProfile_Model.dart';
-import 'package:tech_app/preferences/AppPerfernces.dart';
-import 'package:tech_app/routes/route_name.dart';
-import 'package:tech_app/services/TechnicianProfile_Service.dart';
-import 'package:tech_app/widgets/header.dart';
+import 'package:tech_app/services/EditProfile_Service.dart';
 import 'package:tech_app/widgets/inputs/app_text_field.dart';
+import 'package:tech_app/widgets/inputs/primary_button.dart';
 
-class ProfileView extends StatefulWidget {
-  const ProfileView({super.key});
+class EditProfile extends StatefulWidget {
+  final TechnicianProfile profile;
+  const EditProfile({super.key, required this.profile});
 
   @override
-  State<ProfileView> createState() => _ProfileViewState();
+  State<EditProfile> createState() => _EditProfileState();
 }
 
-class _ProfileViewState extends State<ProfileView> {
-  final TechnicianprofileService _service = TechnicianprofileService();
-  TechnicianProfile? _profile;
-  late TextEditingController firstNameController;
-  late TextEditingController lastNameController;
-  late TextEditingController emailController;
-  late TextEditingController mobileController;
-
+class _EditProfileState extends State<EditProfile> {
+  late TextEditingController _firstname;
+  late TextEditingController _lastname;
+  late TextEditingController _email;
+  late TextEditingController _mobile;
+  File? _selectImage;
+  bool _isLoading = false;
+  final ImagePicker _picker = ImagePicker();
+  final EditprofileService _editprofileService = EditprofileService();
   @override
   void initState() {
     super.initState();
-
-    firstNameController = TextEditingController();
-    lastNameController = TextEditingController();
-    emailController = TextEditingController();
-    mobileController = TextEditingController();
-
-    profiledata();
+    _firstname = TextEditingController(text: widget.profile.data.firstName);
+    _lastname = TextEditingController(text: widget.profile.data.lastName);
+    _email = TextEditingController(text: widget.profile.data.email);
+    _mobile = TextEditingController(
+      text: widget.profile.data.mobile.toString(),
+    );
   }
 
-  Future<void> profiledata() async {
-    try {
-      final response = await _service.tech_profile();
+  Future<void> _PickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
 
-      if (!mounted) return;
-
+    if (image != null) {
       setState(() {
-        _profile = response;
-
-        firstNameController.text = _profile?.data.firstName ?? "";
-        lastNameController.text = _profile?.data.lastName ?? "";
-        emailController.text = _profile?.data.email ?? "";
-        mobileController.text = _profile?.data.mobile?.toString() ?? "";
+        _selectImage = File(image.path);
       });
+    }
+  }
 
-      // Save profile to preferences
-      await Appperfernces.saveProfiledata(response);
-    } catch (e) {}
+  @override
+  void dispose() {
+    _firstname.dispose();
+    _lastname.dispose();
+    _email.dispose();
+    _mobile.dispose();
+    super.dispose();
+  }
+
+  Future<void> _updateprofile() async {
+    try {
+      setState(() => _isLoading = true);
+
+      await _editprofileService.updateProfile(
+        firstName: _firstname.text.trim(),
+        lastName: _lastname.text.trim(),
+        email: _email.text.trim(),
+        mobile: _mobile.text.trim(),
+        image: _selectImage,
+      );
+
+      setState(() => _isLoading = false);
+
+      
+    SnackbarHelper.show(context, backgroundColor: AppColors.scoundry_clr, message: "Profile updated successfully");
+      Navigator.pop(context, true); 
+    } catch (e) {
+      setState(() => _isLoading = false);
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
   }
 
   @override
@@ -64,10 +91,7 @@ class _ProfileViewState extends State<ProfileView> {
       body: SafeArea(
         child: Column(
           children: [
-            Header(title: "Profile Management"),
-
-            const Divider(),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             Stack(
               children: [
                 SizedBox(
@@ -76,12 +100,16 @@ class _ProfileViewState extends State<ProfileView> {
                   child: CircleAvatar(
                     radius: 60,
                     backgroundColor: Colors.grey.shade300,
-                    backgroundImage: _profile?.data.image != null
+                    backgroundImage: _selectImage != null
+                        ? FileImage(_selectImage!)
+                        : widget.profile.data.image!.isNotEmpty
                         ? CachedNetworkImageProvider(
-                            '${ImageBaseUrl.baseUrl}/${_profile!.data.image}',
+                            '${ImageBaseUrl.baseUrl}/${widget.profile.data.image}',
                           )
                         : null,
-                    child: _profile?.data.image == null
+                    child:
+                        (_selectImage == null &&
+                            widget.profile.data.image!.isEmpty)
                         ? const Icon(Icons.person, size: 90)
                         : null,
                   ),
@@ -90,17 +118,7 @@ class _ProfileViewState extends State<ProfileView> {
                   bottom: 0,
                   right: 0,
                   child: InkWell(
-                    onTap: () async {
-                      final updated = await context.push(
-                        RouteName.editprofile,
-                        extra: _profile,
-                      );
-
-                      if (updated == true) {
-                        profiledata(); 
-                      }
-                    },
-
+                    onTap: () => _PickImage(),
                     child: Container(
                       height: 40,
                       width: 40,
@@ -116,12 +134,10 @@ class _ProfileViewState extends State<ProfileView> {
             ),
             const SizedBox(height: 8),
             Text(
-              "${_profile?.data.firstName} ${_profile?.data.lastName}",
+              "${widget.profile.data.firstName} ${widget.profile.data.lastName}",
               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
             ),
             const SizedBox(height: 5),
-            Text("${_profile?.data.role.skill}"),
-            const SizedBox(height: 15),
             Expanded(
               child: SingleChildScrollView(
                 child: Container(
@@ -155,9 +171,7 @@ class _ProfileViewState extends State<ProfileView> {
                         const SizedBox(height: 15),
                         AppTextField(
                           label: "First Name",
-                          controller: firstNameController,
-                          readOnly: true,
-                          enabled: false,
+                          controller: _firstname,
                         ),
                         const SizedBox(height: 10),
 
@@ -169,12 +183,7 @@ class _ProfileViewState extends State<ProfileView> {
                           ),
                         ),
                         const SizedBox(height: 15),
-                        AppTextField(
-                          label: "Last Name",
-                          controller: lastNameController,
-                          readOnly: true,
-                          enabled: false,
-                        ),
+                        AppTextField(label: "Last Name", controller: _lastname),
 
                         const SizedBox(height: 10),
                         Text(
@@ -185,12 +194,7 @@ class _ProfileViewState extends State<ProfileView> {
                           ),
                         ),
                         const SizedBox(height: 15),
-                        AppTextField(
-                          label: "Email",
-                          controller: emailController,
-                          readOnly: true,
-                          enabled: false,
-                        ),
+                        AppTextField(label: "Email", controller: _email),
 
                         const SizedBox(height: 10),
                         Text(
@@ -203,12 +207,18 @@ class _ProfileViewState extends State<ProfileView> {
                         const SizedBox(height: 15),
                         AppTextField(
                           label: "Mobile Number",
-                          controller: mobileController,
-                          readOnly: true,
-                          enabled: false,
+                          controller: _mobile,
                         ),
-
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 20),
+                        PrimaryButton(
+                          radius: 12,
+                          height: 50,
+                          color: AppColors.primary_clr,
+                          onPressed: () {
+                            _updateprofile();
+                          },
+                          text: "Save Changes",
+                        ),
                       ],
                     ),
                   ),
