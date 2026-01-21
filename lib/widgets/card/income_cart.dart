@@ -177,8 +177,7 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
                     size: 18,
                     color: AppColors.scoundry_clr,
                   ),
-                  text:
-                      " ${DateFormat('MMM dd yyyy').format(assignment!.updatedAt!)}",
+                  text: " ${formatDateForUI(assignment!.updatedAt!)}",
                 ),
 
                 const SizedBox(height: 8),
@@ -192,7 +191,7 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          formatWorkDuration(assignment!.workDuration),
+                          formatWorkDuration(assignment.workDuration),
                           style: const TextStyle(fontSize: 14),
                         ),
                       ),
