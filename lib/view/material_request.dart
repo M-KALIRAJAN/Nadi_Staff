@@ -47,14 +47,11 @@ class _MaterialRequestState extends State<MaterialRequest> {
       setState(() {
         isLoading = true;
       });
-     final payload = <String, dynamic>{
-  "requests": [
-    {
-      "productId": selectedProduct!.id,
-      "quantity": quantity,
-    }
-  ]
-};
+      final payload = <String, dynamic>{
+        "requests": [
+          {"productId": selectedProduct!.id, "quantity": quantity},
+        ],
+      };
 
       final result = await _materialrequestService.fetchmaterialrequest(
         payload: payload,
@@ -80,7 +77,7 @@ class _MaterialRequestState extends State<MaterialRequest> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.background_clr,
+      backgroundColor: AppColors.background_clr,
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
@@ -105,8 +102,6 @@ class _MaterialRequestState extends State<MaterialRequest> {
                       setState(() {
                         selectedProduct = Product;
                       });
-                      
-                    
                     },
                   ),
                   const SizedBox(height: 25),
@@ -144,7 +139,7 @@ class _MaterialRequestState extends State<MaterialRequest> {
                       context.push(RouteName.bulk_request);
                     },
                     text: "Add Bulk Request",
-                    icon: Icon(Icons.add ,size: 25,color: Colors.white,),
+                    icon: Icon(Icons.add, size: 25, color: Colors.white),
                   ),
                   const SizedBox(height: 20),
                   PrimaryButton(

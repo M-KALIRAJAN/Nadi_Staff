@@ -1,7 +1,9 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/core/network/dio_client.dart';
@@ -27,6 +29,33 @@ class ServicerequestCart extends ConsumerStatefulWidget {
 class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
   final AcceptrequestService _acceptrequestService = AcceptrequestService();
   final StartworkService _startwork = StartworkService();
+
+  // 🔹 AUDIO PLAYER
+  AudioPlayer? _audioPlayer;
+  bool _isPlaying = false;
+
+  @override
+  void dispose() {
+    _audioPlayer?.dispose();
+    super.dispose();
+  }
+
+  // 🔹 Play / Pause voice
+  Future<void> _toggleVoice(String url) async {
+    if (_audioPlayer == null) _audioPlayer = AudioPlayer();
+
+    if (_isPlaying) {
+      await _audioPlayer!.pause();
+      setState(() => _isPlaying = false);
+    } else {
+      await _audioPlayer!.play(UrlSource(url));
+      setState(() => _isPlaying = true);
+
+      _audioPlayer!.onPlayerComplete.listen((event) {
+        setState(() => _isPlaying = false);
+      });
+    }
+  }
 
   Future<void> acceptrequest({required String status, String? reason}) async {
     try {
@@ -179,7 +208,9 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
       ),
     );
   }
-
+String formatDateOnly(DateTime date) {
+  return DateFormat('d MMM yyyy').format(date);
+}
   Widget _buildCustomerDetails() {
     return Container(
       margin: const EdgeInsets.all(12),
@@ -243,24 +274,24 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
                   "Address",
                   "building ${widget.data.address.building}, floor ${widget.data.address.floor}, aptNo ${widget.data.address.aptNo}",
                 ),
-                const Divider(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "Location",
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                    Container(
-                      height: 90,
-                      width: 200,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: const Color.fromARGB(196, 189, 185, 185),
-                      ),
-                    ),
-                  ],
-                ),
+                // const Divider(),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     const Text(
+                //       "Location",
+                //       style: TextStyle(fontSize: 12, color: Colors.grey),
+                //     ),
+                //     Container(
+                //       height: 90,
+                //       width: 200,
+                //       decoration: BoxDecoration(
+                //         borderRadius: BorderRadius.circular(10),
+                //         color: const Color.fromARGB(196, 189, 185, 185),
+                //       ),
+                //     ),
+                //   ],
+                // ),
                 const Divider(),
                 _infoRow("Distance:", "7km"),
               ],
@@ -325,16 +356,87 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
                 const Divider(),
                 _infoRow("Description", widget.data.feedback ?? ""),
                 const Divider(),
-                _infoRow("Status", widget.data.assignmentStatus, isStatus: true),
-                const Divider(),
-                _infoRow("View Media", "Tap to view", media: widget.data.media),
+                _infoRow(
+                  "Status",
+                  widget.data.assignmentStatus,
+                  isStatus: true,
+                ),
+                if (widget.data.media != null &&
+                    widget.data.media.isNotEmpty) ...[
+                  const Divider(),
+                  _infoRow(
+                    "View Media",
+                    "Tap to view",
+                    media: widget.data.media,
+                  ),
+                ],
+                if (widget.data.voice != null &&
+                    widget.data.voice!.isNotEmpty) ...[
+                  const Divider(),
+                  InkWell(
+                    onTap: () async {
+                      final url =
+                          "${ImageBaseUrl.baseUrl}/${widget.data.voice!.trim()}";
+
+                      if (_audioPlayer == null) _audioPlayer = AudioPlayer();
+
+                      if (_isPlaying) {
+                        await _audioPlayer!.pause();
+                        setState(() => _isPlaying = false);
+                      } else {
+                        await _audioPlayer!.play(UrlSource(url)); // network URL
+                        setState(() => _isPlaying = true);
+
+                        _audioPlayer!.onPlayerComplete.listen((event) {
+                          setState(() => _isPlaying = false);
+                        });
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Voice Note",
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              _isPlaying ? "Playing..." : "Tap to play",
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Icon(
+                              _isPlaying
+                                  ? Icons.pause_circle
+                                  : Icons.play_circle,
+                              color: Colors.blue,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
                 const Divider(),
                 _infoRow(
                   "Date Required",
-                  formatDateForUI(widget.data.scheduleService),
+           formatDateOnly (widget.data.scheduleService),
                 ),
                 const Divider(),
-                _infoRow("Time Window", "10:00AM - 12:00AM"),
+                _infoRow(
+                  "Time Window",
+                  widget.data.scheduleServiceTime?.isNotEmpty == true
+                      ? widget.data.scheduleServiceTime!
+                      : "00:00",
+                ),
+
                 const Divider(),
                 _infoRow(
                   "Date Created",
@@ -527,23 +629,6 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
                       ),
                       const SizedBox(height: 12),
                     ],
-                  ),
-                if (otherMedia.isNotEmpty)
-                  SizedBox(
-                    height: 200,
-                    child: ListView.builder(
-                      itemCount: otherMedia.length,
-                      itemBuilder: (context, index) {
-                        final media = otherMedia[index];
-                        return ListTile(
-                          leading: const Icon(Icons.play_circle_fill),
-                          title: Text(media.split('/').last),
-                          onTap: () {
-                            // TODO: Handle video/audio playback
-                          },
-                        );
-                      },
-                    ),
                   ),
               ],
             ),

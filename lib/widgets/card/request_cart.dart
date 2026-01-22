@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -14,15 +12,15 @@ class RequestCart extends StatelessWidget {
   final String clientname;
   final String servicetype;
   final String assignmentStatus;
-final DateTime scheduleService;
-final DateTime createdAt;
+  final DateTime scheduleService;
+  final DateTime createdAt;
   final String feedback;
   final String serviceRequestID;
   final int payment;
   final String userServiceId;
   final List<Assignment> assignments;
   final List<String> media;
- final String status;
+  final String status;
   const RequestCart({
     super.key,
     required this.clientname,
@@ -35,13 +33,13 @@ final DateTime createdAt;
     required this.assignments,
     required this.payment,
     required this.media,
-      required this.userServiceId, required this.status,
+    required this.userServiceId,
+    required this.status,
   });
 
-
-String formatDate(DateTime dateTime) {
-  return DateFormat('MMM d, yyyy').format(dateTime);
-}
+  String formatDate(DateTime dateTime) {
+    return DateFormat('MMM d, yyyy').format(dateTime);
+  }
 
   Widget _sectionHeader(String title, {IconData? icon}) {
     return Container(
@@ -96,99 +94,98 @@ String formatDate(DateTime dateTime) {
     );
   }
 
-Widget _infoRow(
-  BuildContext context,
-  String label,
-  String value, {
-  List<String>? media,
-  bool isStatus = false,
-}) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // LABEL
-        Expanded(
-          flex: 3,
-          child: Text(
-            label,
-            style: TextStyle(
-              color: AppColors.lightgray_clr,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
+  Widget _infoRow(
+    BuildContext context,
+    String label,
+    String value, {
+    List<String>? media,
+    bool isStatus = false,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // LABEL
+          Expanded(
+            flex: 3,
+            child: Text(
+              label,
+              style: TextStyle(
+                color: AppColors.lightgray_clr,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
-        ),
 
-        // VALUE
-        Expanded(
-          flex: 5,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: _buildValueWidget(context, value, media, isStatus),
+          // VALUE
+          Expanded(
+            flex: 5,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: _buildValueWidget(context, value, media, isStatus),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildValueWidget(
+    BuildContext context,
+    String value,
+    List<String>? media,
+    bool isStatus,
+  ) {
+    // MEDIA LINK
+    if (media != null && media.isNotEmpty) {
+      return InkWell(
+        onTap: () => _showissuseMediaDialog(context, media),
+        child: Text(
+          value,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Colors.blue,
+            decoration: TextDecoration.underline,
           ),
         ),
-      ],
-    ),
-  );
-}
+      );
+    }
 
-Widget _buildValueWidget(
-  BuildContext context,
-  String value,
-  List<String>? media,
-  bool isStatus,
-) {
-  // MEDIA LINK
-  if (media != null && media.isNotEmpty) {
-    return InkWell(
-      onTap: () => _showissuseMediaDialog(context, media),
-      child: Text(
-        value,
-        style: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          color: Colors.blue,
-          decoration: TextDecoration.underline,
+    if (isStatus) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(156, 148, 229, 208),
+          borderRadius: BorderRadius.circular(20),
         ),
+        child: Text(
+          value.toUpperCase(),
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+            color: AppColors.scoundry_clr,
+            letterSpacing: 0.6,
+          ),
+        ),
+      );
+    }
+
+    // DEFAULT TEXT
+    return Text(
+      value,
+      textAlign: TextAlign.right,
+      maxLines: 4,
+      overflow: TextOverflow.ellipsis,
+      style: const TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: Colors.black87,
       ),
     );
   }
-
-
-  if (isStatus) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(156, 148, 229, 208),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        value.toUpperCase(),
-        style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-          color:  AppColors.scoundry_clr,
-          letterSpacing: 0.6,
-        ),
-      ),
-    );
-  }
-
-  // DEFAULT TEXT
-  return Text(
-    value,
-    textAlign: TextAlign.right,
-    maxLines: 4,
-    overflow: TextOverflow.ellipsis,
-    style: const TextStyle(
-      fontSize: 14,
-      fontWeight: FontWeight.w500,
-      color: Colors.black87,
-    ),
-  );
-}
 
   Widget _sparePartRow(String label, String qty, String amount) {
     return Padding(
@@ -316,15 +313,15 @@ Widget _buildValueWidget(
         )
         .toList();
 
-    final otherMedia = mediaList
-        .where(
-          (media) =>
-              !media.endsWith(".jpg") &&
-              !media.endsWith(".png") &&
-              !media.endsWith(".jpeg") &&
-              !media.endsWith(".webp"),
-        )
-        .toList();
+    // final otherMedia = mediaList
+    //     .where(
+    //       (media) =>
+    //           !media.endsWith(".jpg") &&
+    //           !media.endsWith(".png") &&
+    //           !media.endsWith(".jpeg") &&
+    //           !media.endsWith(".webp"),
+    //     )
+    //     .toList();
 
     final PageController _pageController = PageController();
 
@@ -391,24 +388,7 @@ Widget _buildValueWidget(
                     ],
                   ),
 
-                // Other media (mp3, mp4)
-                if (otherMedia.isNotEmpty)
-                  SizedBox(
-                    height: 200,
-                    child: ListView.builder(
-                      itemCount: otherMedia.length,
-                      itemBuilder: (context, index) {
-                        final media = otherMedia[index];
-                        return ListTile(
-                          leading: const Icon(Icons.play_circle_fill),
-                          title: Text(media.split('/').last),
-                          onTap: () {
-                            // TODO: Handle video/audio playback
-                          },
-                        );
-                      },
-                    ),
-                  ),
+              
               ],
             ),
           ),
@@ -443,8 +423,8 @@ Widget _buildValueWidget(
                     _infoRow(context, "Request ID", serviceRequestID),
                     const Divider(),
                     _infoRow(context, "Service Type", servicetype),
-                    const Divider(),
-                    _infoRow(context, "Status", assignmentStatus),
+                    // const Divider(),
+                    // _infoRow(context, "Status", assignmentStatus),
                     const Divider(),
                     _infoRow(context, "Client Name", clientname),
                     const Divider(),
@@ -453,13 +433,22 @@ Widget _buildValueWidget(
                       "Scheduled For",
                       formatDate(scheduleService),
                     ),
-                    const Divider(),
-                    _infoRow(
-                      context,
-                      "View Media",
-                      "Tap to view",
-                      media: media,
-                    ),
+                    // const Divider(),
+                    // _infoRow(
+                    //   context,
+                    //   "View Media",
+                    //   "Tap to view",
+                    //   media: media,
+                    // ),
+                    if (media != null && media.isNotEmpty) ...[
+                      const Divider(),
+                      _infoRow(
+                        context,
+                        "View Media",
+                        "Tap to view",
+                        media: media,
+                      ),
+                    ],
                     const Divider(),
                     _infoRow(context, "Created On", formatDate(createdAt)),
                     const Divider(),
@@ -561,13 +550,12 @@ Widget _buildValueWidget(
                           "Description :",
                           '${(assignment.notes) ?? "_"}',
                         ),
-const Divider(),
+                        const Divider(),
                         _infoRow(
                           context,
                           "Status :",
                           '${(assignment.status)}',
-                           isStatus: true
-
+                          isStatus: true,
                         ),
                         const Divider(),
                         // View Fixed Media Row
@@ -629,7 +617,13 @@ const Divider(),
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("Total Amount:"),
-                      Text("BHD: ${payment.toString()}",style: TextStyle(color: AppColors.scoundry_clr,fontWeight: FontWeight.bold),),
+                      Text(
+                        "BHD: ${payment.toString()}",
+                        style: TextStyle(
+                          color: AppColors.scoundry_clr,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 ),

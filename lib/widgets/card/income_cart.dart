@@ -258,7 +258,7 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
       width: 40,
       decoration: BoxDecoration(
         color: bgColor ?? Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(30),
       ),
       child: Center(child: image ?? icon ?? const SizedBox()),
     );
