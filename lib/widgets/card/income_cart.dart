@@ -162,11 +162,7 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
                 const SizedBox(height: 5),
                 if (payment != null) ...[
                   _infoRow(
-                    icon: Icon(
-                      Icons.currency_rupee,
-                      size: 18,
-                      color: AppColors.scoundry_clr,
-                    ),
+                      image: Image.asset("assets/images/curuncy.png" ),
                     text: " BHD: ${payment.toString()}",
                   ),
                 ],

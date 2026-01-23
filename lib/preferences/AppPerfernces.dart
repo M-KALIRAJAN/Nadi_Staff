@@ -7,7 +7,7 @@ class Appperfernces {
   static const String _tokenKey = "auth_token";
   static const String _profileKey = "technician_profile";
   static const String _loginKey = "is_logged_in";
-
+  static const String _fcmtokenkey ="fcmtoken";
   // ==== TOKEN ====
   static Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
@@ -18,6 +18,16 @@ class Appperfernces {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_tokenKey);
   }
+// === FCM TOKEN ===
+static Future<void> saveFcmToken(String fcmToken) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString(_fcmtokenkey, fcmToken);
+}
+
+static Future<String?> getFcmToken() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString(_fcmtokenkey);
+}
 
     // ================== LOGIN FLAG ==================
   static Future<void> setLoggedIn(bool value) async {

@@ -12,7 +12,7 @@ import 'package:tech_app/view/material_request.dart';
 import 'package:tech_app/view/spare_part_used.dart';
 import 'package:tech_app/widgets/card/servicerequest_cart.dart';
 import 'package:tech_app/model/ServiceList _Model.dart';
-
+import 'package:tech_app/view/nodifications.dart';
 final Approute = GoRouter(
   initialLocation: RouteName.splash,
   routes: [
@@ -50,6 +50,10 @@ final Approute = GoRouter(
     GoRoute(
       path: RouteName.material_request,
       builder: (context, state) => const MaterialRequest(),
+    ),
+    GoRoute(
+      path: RouteName.nodification,
+      builder: (context, state) => const Notifications(),
     ),
     GoRoute(
       path: RouteName.service_card,

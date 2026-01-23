@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/model/StatusFilter_Model.dart';
+import 'package:tech_app/provider/notification_Service_Provider.dart';
 import 'package:tech_app/provider/service_list_provider.dart';
 import 'package:tech_app/routes/route_name.dart';
 import 'package:tech_app/widgets/card/income_cart.dart';
@@ -31,7 +32,12 @@ class _HomeViewState extends ConsumerState<HomeView> {
     StatusFilter('Completed', 'completed'),
     StatusFilter('Rejected', 'rejected'),
   ];
-
+ 
+ @override
+ void initState() {
+   super.initState();
+   Future.microtask(()=> ref.refresh(notificationServiceProvider));
+ }
   @override
   Widget build(BuildContext context) {
     final serviceList = ref.watch(serviceListProvider);

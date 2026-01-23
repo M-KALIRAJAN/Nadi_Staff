@@ -1,10 +1,11 @@
 class AuthModel {
   final String email;
   final String password;
+  final String fcmToken;
 
   AuthModel({
     required this.email,
-    required this.password,
+    required this.password, required this.fcmToken,
   });
 
   // Convert to JSON for API request
@@ -12,11 +13,8 @@ class AuthModel {
     return {
       "email": email,
       "password": password,
+      "fcmToken":fcmToken
     };
   }
 
-  @override
-  String toString() {
-    return 'AuthModel(email: $email, password: $password)';
-  }
 }

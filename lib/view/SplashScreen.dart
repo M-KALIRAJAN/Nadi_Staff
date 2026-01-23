@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
@@ -33,7 +34,32 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _navigate();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+    _initNotifications();
+  });
   }
+Future<void> _initNotifications() async {
+  try {
+    await FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    final token = await FirebaseMessaging.instance.getToken();
+
+    print("🔥 FCM TOKEN: $token");
+
+    if (token != null) {
+      await Appperfernces.saveFcmToken(token);
+    } else {
+      print("❌ FCM token is NULL");
+    }
+  } catch (e) {
+    print("❌ FCM ERROR: $e");
+  }
+}
+
 
   Future<void> _navigate() async {
     await Future.delayed(const Duration(seconds: 3));

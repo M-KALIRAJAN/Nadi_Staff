@@ -7,7 +7,7 @@ import 'package:tech_app/preferences/AppPerfernces.dart';
 class AuthService {
   final Dio _dio = DioClient.dio;
 
-  Future<Map<String, dynamic>> techLogin(AuthModel authmodel) async {
+  Future<Map<String, dynamic>> techLogin(AuthModel authmodel ) async {
     try {
       final response = await _dio.post(
         "technician/login",

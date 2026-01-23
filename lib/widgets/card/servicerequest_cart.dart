@@ -10,6 +10,7 @@ import 'package:tech_app/core/network/dio_client.dart';
 import 'package:tech_app/core/utils/Time_Date.dart';
 import 'package:tech_app/core/utils/snackbar_helper.dart';
 import 'package:tech_app/provider/service_list_provider.dart';
+import 'package:tech_app/provider/service_timer_provider.dart';
 import 'package:tech_app/services/AcceptRequest_Service.dart';
 import 'package:tech_app/services/StartWork_Service.dart';
 import 'package:tech_app/view/update_request_view.dart';
@@ -83,10 +84,13 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
     }
   }
 
-  // ✅ Start Work
+  // Start Work
   Future<void> startwork() async {
     try {
       await _startwork.fetchstartwork(widget.data.id);
+
+     // ✅ START GLOBAL TIMER
+    ref.read(serviceTimerProvider.notifier).start();
 
       SnackbarHelper.show(
         context,
@@ -208,9 +212,11 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
       ),
     );
   }
-String formatDateOnly(DateTime date) {
-  return DateFormat('d MMM yyyy').format(date);
-}
+
+  String formatDateOnly(DateTime date) {
+    return DateFormat('d MMM yyyy').format(date);
+  }
+
   Widget _buildCustomerDetails() {
     return Container(
       margin: const EdgeInsets.all(12),
@@ -427,7 +433,7 @@ String formatDateOnly(DateTime date) {
                 const Divider(),
                 _infoRow(
                   "Date Required",
-           formatDateOnly (widget.data.scheduleService),
+                  formatDateOnly(widget.data.scheduleService),
                 ),
                 const Divider(),
                 _infoRow(

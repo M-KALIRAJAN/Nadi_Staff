@@ -10,4 +10,6 @@ class RouteName {
   static const String sparepart_used = "/sparepart_used";
   static const String editprofile = "/editprofile";
   static const String forgotpassword= "/forgotpassword";
+   static const String nodification ="/nodification";
+
 }
