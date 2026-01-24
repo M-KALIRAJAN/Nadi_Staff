@@ -175,7 +175,6 @@ class _BulkRequestState extends State<BulkRequest> {
               ],
             ),
           ),
-
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -183,7 +182,6 @@ class _BulkRequestState extends State<BulkRequest> {
               children: [
                 const Text("Material Name"),
                 const SizedBox(height: 8),
-
                 AppDropdown(
                   label: "Select Product",
                   items: products.map((e) => e.productName).toList(),
