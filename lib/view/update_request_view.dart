@@ -143,7 +143,7 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
         }
       },
       child: Container(
-        color: AppColors.background_clr,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
@@ -159,7 +159,7 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
                 child: Center(
                   child: Text(
                     widget.serviceRequestId.toUpperCase(),
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17,color: Colors.black),
                   ),
                 ),
               ),
@@ -202,6 +202,7 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
+                            color: Colors.black
                           ),
                         ),
                       ],

@@ -47,7 +47,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
     }
 
     return Scaffold(
-        backgroundColor: AppColors.background_clr,
+        backgroundColor:Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [

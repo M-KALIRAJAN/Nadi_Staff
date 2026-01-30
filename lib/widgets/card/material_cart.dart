@@ -49,7 +49,7 @@ class MaterialCart extends StatelessWidget {
               Text(
                 productName,
                 style:
-                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                     TextStyle(fontSize: 14, fontWeight: FontWeight.w600,color: Colors.black),
               ),
               const SizedBox(height: 4),
               Text.rich(

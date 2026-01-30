@@ -77,10 +77,17 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
     final assignment = assignments.isNotEmpty ? assignments.first : null;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(15),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4)),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white.withOpacity(0.25) 
+                : Colors.black.withOpacity(0.15), 
+
+            blurRadius: 8,
+            offset: Offset(0, 4),
+          ),
         ],
       ),
       child: Column(
@@ -162,7 +169,7 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
                 const SizedBox(height: 5),
                 if (payment != null) ...[
                   _infoRow(
-                      image: Image.asset("assets/images/curuncy.png" ),
+                    image: Image.asset("assets/images/curuncy.png"),
                     text: " BHD: ${payment.toString()}",
                   ),
                 ],

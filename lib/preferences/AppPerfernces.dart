@@ -56,4 +56,11 @@ static Future<String?> getFcmToken() async {
     final Map<String, dynamic> jsonMap = json.decode(profileString);
     return TechnicianProfile.fromJson(jsonMap);
   }
+
+
+  static Future<void> clearAll() async { 
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+
+  }
 }

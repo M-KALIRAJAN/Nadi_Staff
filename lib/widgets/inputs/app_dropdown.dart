@@ -22,46 +22,55 @@ class AppDropdown extends StatelessWidget {
     return DropdownButtonFormField<String>(
       value: value,
       validator: validator,
+      style: const TextStyle(
+        color: Colors.black, 
+        fontSize: 14,
+      ),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(fontSize: 14, color: Colors.grey),
+        labelStyle: const TextStyle(
+          fontSize: 14,
+          color: Colors.black,
+        ),
         floatingLabelStyle: const TextStyle(
           color: AppColors.scoundry_clr,
           fontWeight: FontWeight.w400,
         ),
-        fillColor: Colors.white,
         filled: true,
+        fillColor: Colors.white, 
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12)
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF79747E)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(
             color: AppColors.scoundry_clr,
-            width: 1.5
-          )
+            width: 1.5,
+          ),
         ),
-        errorBorder:OutlineInputBorder(
-           borderRadius: BorderRadius.circular(12),
-           borderSide: const BorderSide(
-                 color: Colors.red
-           )
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.red),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(
-            color: Colors.red
-          )
+          borderSide: const BorderSide(color: Colors.red, width: 1.5),
         ),
-        
       ),
-      icon: const Icon(Icons.keyboard_arrow_down),
-        items: items.map(
-          (item) => DropdownMenuItem<String>(
-            value: item,
-            child: Text(item))
-        ).toList(),
-        onChanged:onChanged,
+      icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black),
+      items: items
+          .map(
+            (item) => DropdownMenuItem<String>(
+              value: item,
+              child: Text(
+                item,
+                style: const TextStyle(color: Colors.black), 
+              ),
+            ),
+          )
+          .toList(),
+      onChanged: onChanged,
     );
   }
 }

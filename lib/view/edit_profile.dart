@@ -72,9 +72,12 @@ class _EditProfileState extends State<EditProfile> {
 
       setState(() => _isLoading = false);
 
-      
-    SnackbarHelper.show(context, backgroundColor: AppColors.scoundry_clr, message: "Profile updated successfully");
-      Navigator.pop(context, true); 
+      SnackbarHelper.show(
+        context,
+        backgroundColor: AppColors.scoundry_clr,
+        message: "Profile updated successfully",
+      );
+      Navigator.pop(context, true);
     } catch (e) {
       setState(() => _isLoading = false);
 
@@ -87,7 +90,7 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background_clr,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -158,52 +161,30 @@ class _EditProfileState extends State<EditProfile> {
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 18,
+                            color: Colors.black,
                           ),
                         ),
                         const SizedBox(height: 15),
-                        Text(
-                          "Full Name",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                          ),
-                        ),
+
+                        _label("First Name"),
                         const SizedBox(height: 15),
                         AppTextField(
                           label: "First Name",
                           controller: _firstname,
                         ),
                         const SizedBox(height: 10),
-
-                        Text(
-                          "Last Name",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                          ),
-                        ),
+                        _label("Last Name"),
                         const SizedBox(height: 15),
                         AppTextField(label: "Last Name", controller: _lastname),
 
                         const SizedBox(height: 10),
-                        Text(
-                          "Email",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                          ),
-                        ),
+
+                        _label("Email"),
                         const SizedBox(height: 15),
                         AppTextField(label: "Email", controller: _email),
 
                         const SizedBox(height: 10),
-                        Text(
-                          "Mobile Number",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                          ),
-                        ),
+                        _label("Mobile Number"),
                         const SizedBox(height: 15),
                         AppTextField(
                           label: "Mobile Number",
@@ -228,6 +209,13 @@ class _EditProfileState extends State<EditProfile> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _label(String text) {
+    return Text(
+      text,
+      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16,color: Colors.black),
     );
   }
 }

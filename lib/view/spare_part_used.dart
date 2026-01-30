@@ -106,7 +106,7 @@ class _SparePartUsedState extends ConsumerState<SparePartUsed> {
       canPop: false,
 
       child: Scaffold(
-        backgroundColor: AppColors.background_clr,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -236,6 +236,7 @@ class _SparePartUsedState extends ConsumerState<SparePartUsed> {
                                       item.productId.productName,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w500,
+                                        color: Colors.black
                                       ),
                                     ),
                                     const SizedBox(height: 10),
@@ -355,7 +356,7 @@ class _SparePartUsedState extends ConsumerState<SparePartUsed> {
   Widget _availablePartsCard(List<Datum> spareParts) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(15),
         boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)],
       ),
@@ -387,7 +388,7 @@ class _SparePartUsedState extends ConsumerState<SparePartUsed> {
                               });
                             },
                     ),
-                    Expanded(child: Text(item.productId.productName)),
+                    Expanded(child: Text(item.productId.productName,style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),)),
                     Text(
                       "BHD ${item.productId.price}",
                       style: const TextStyle(fontWeight: FontWeight.w600),

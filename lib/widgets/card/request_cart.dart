@@ -68,7 +68,7 @@ class RequestCart extends StatelessWidget {
           Expanded(
             child: Text(
               title,
-              style: const TextStyle(
+              style:  TextStyle(
                 color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -80,14 +80,17 @@ class RequestCart extends StatelessWidget {
     );
   }
 
-  Widget _cardContainer({required Widget child}) {
+  Widget _cardContainer({required Widget child ,  required BuildContext context}) {
     return Container(
       margin: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(15),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+        boxShadow:  [
+          BoxShadow(
+            color: Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.35):Colors.black.withOpacity(0.25),
+             blurRadius: 6, 
+             offset: Offset(0, 3)),
         ],
       ),
       child: child,
@@ -112,7 +115,7 @@ class RequestCart extends StatelessWidget {
             child: Text(
               label,
               style: TextStyle(
-                color: AppColors.lightgray_clr,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
               ),
@@ -179,10 +182,10 @@ class RequestCart extends StatelessWidget {
       textAlign: TextAlign.right,
       maxLines: 4,
       overflow: TextOverflow.ellipsis,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w500,
-        color: Colors.black87,
+        color:Theme.of(context).textTheme.bodyMedium?.color,
       ),
     );
   }
@@ -412,10 +415,11 @@ class RequestCart extends StatelessWidget {
       children: [
         // 1. Request Information
         _cardContainer(
+          context: context,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _sectionHeader("Request Information", icon: Icons.receipt_long),
+              _sectionHeader("Request Information", icon: Icons.receipt_long,),
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -485,6 +489,7 @@ class RequestCart extends StatelessWidget {
           itemBuilder: (context, index) {
             final assignment = assignments[index];
             return _cardContainer(
+              context: context,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -530,6 +535,7 @@ class RequestCart extends StatelessWidget {
             final assignmentMedia = assignment.media;
 
             return _cardContainer(
+              context: context,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -596,6 +602,7 @@ class RequestCart extends StatelessWidget {
 
         // 4. Total Service Cost
         _cardContainer(
+          context: context,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -606,7 +613,7 @@ class RequestCart extends StatelessWidget {
                     bottomLeft: Radius.circular(15),
                     bottomRight: Radius.circular(15),
                   ),
-                  color: Colors.grey.shade300,
+                  color: Theme.of(context).colorScheme.surface,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(

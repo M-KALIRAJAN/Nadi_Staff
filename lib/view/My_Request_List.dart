@@ -24,8 +24,9 @@ class _MyRequestListState extends ConsumerState<MyRequestList> {
     final requestAsync = ref.watch(requestlistprovider);
 
     return Scaffold(
-      backgroundColor: AppColors.background_clr,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
+        backgroundColor: AppColors.scoundry_clr,
         title: const Text("My Requests"),
         centerTitle: true,
         elevation: 0,
@@ -89,7 +90,15 @@ class _MyRequestListState extends ConsumerState<MyRequestList> {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color:
+                                  Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.white.withOpacity(
+                                      0.05,
+                                    ) // light shadow on dark
+                                  : Colors.black.withOpacity(
+                                      0.05,
+                                    ), // dark shadow on light
                               blurRadius: 8,
                               offset: const Offset(0, 4),
                             ),
@@ -105,6 +114,7 @@ class _MyRequestListState extends ConsumerState<MyRequestList> {
                             style: const TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 16,
+                              color: Colors.black
                             ),
                           ),
                           subtitle: Padding(
@@ -156,7 +166,7 @@ class _MyRequestListState extends ConsumerState<MyRequestList> {
                           ),
 
                           trailing: Chip(
-                            label: Text(item.status),
+                            label: Text(item.status,style: TextStyle(color: Colors.black),),
                             backgroundColor: Colors.blue.shade50,
                           ),
                         ),

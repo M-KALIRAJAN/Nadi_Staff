@@ -77,7 +77,7 @@ class _MaterialRequestState extends State<MaterialRequest> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background_clr,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(

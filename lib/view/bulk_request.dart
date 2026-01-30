@@ -83,7 +83,7 @@ class _BulkRequestState extends State<BulkRequest> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background_clr,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(12),
@@ -136,7 +136,16 @@ class _BulkRequestState extends State<BulkRequest> {
       margin: const EdgeInsets.only(bottom: 16),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white.withOpacity(0.35)
+                : Colors.black.withOpacity(0.15),
+            offset: const Offset(0, 4),
+            blurRadius: 10,
+          ),
+        ],
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
@@ -147,6 +156,7 @@ class _BulkRequestState extends State<BulkRequest> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
               color: AppColors.primary_clr,
+
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(15),
                 topRight: Radius.circular(15),

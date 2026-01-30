@@ -114,6 +114,7 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -221,10 +222,12 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
     return Container(
       margin: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(15),
-        boxShadow: const [
-          BoxShadow(color: Colors.black38, blurRadius: 6, offset: Offset(0, 3)),
+        boxShadow:  [
+          BoxShadow(
+            color: Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.35):Colors.black.withOpacity(0.15),
+            blurRadius: 6, offset: Offset(0, 3)),
         ],
       ),
       child: Column(
@@ -312,10 +315,12 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
     return Container(
       margin: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(15),
-        boxShadow: const [
-          BoxShadow(color: Colors.black38, blurRadius: 6, offset: Offset(0, 3)),
+        boxShadow:  [
+          BoxShadow(
+            color: Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.35):Colors.black.withOpacity(0.15),
+             blurRadius: 6, offset: Offset(0, 3)),
         ],
       ),
       child: Column(
@@ -496,7 +501,7 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
         children: [
           Text(
             label,
-            style: TextStyle(color: AppColors.lightgray_clr, fontSize: 12),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 12),
           ),
           Expanded(
             child: Align(
