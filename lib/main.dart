@@ -40,15 +40,11 @@ class MyApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-
       themeMode: ref.watch(themeProvider),
-
       theme: ThemeData(
         brightness: Brightness.light,
         fontFamily: "Poppins",
-
         scaffoldBackgroundColor: AppColors.background_clr,
-
         colorScheme: const ColorScheme.light(
           primary: AppColors.primary_clr,
           secondary: AppColors.new_clr,
@@ -57,13 +53,10 @@ class MyApp extends ConsumerWidget {
 
         textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.black)),
       ),
-
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         fontFamily: "Poppins",
-
         scaffoldBackgroundColor: Colors.black,
-
         colorScheme: const ColorScheme.dark(
           primary: AppColors.primary_clr,
           secondary: AppColors.new_clr,
