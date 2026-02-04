@@ -9,7 +9,7 @@ import 'package:tech_app/services/NotificationService.dart';
 import 'package:tech_app/services/firebase_background_handler.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized(); 
   await Firebase.initializeApp();
   await Notificationservice.initialize();
   await Notificationservice.createChannel();

@@ -49,7 +49,7 @@ class Notifications extends ConsumerWidget {
             return const Center(
               child: Text(
                 "No notifications",
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle( ),
               ),
             );
           }
@@ -127,9 +127,10 @@ class Notifications extends ConsumerWidget {
                               children: [
                                 Text(
                                   n.type,
-                                  style: const TextStyle(
+                                  style:  TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
+                                    color:Theme.of(context).textTheme.bodyMedium?.color
                                   ),
                                 ),
                                 const SizedBox(height: 6),
