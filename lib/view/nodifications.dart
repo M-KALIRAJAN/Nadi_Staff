@@ -3,37 +3,32 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tech_app/core/utils/Time_Date.dart';
 import 'package:tech_app/provider/notification_Service_Provider.dart';
 import 'package:tech_app/services/NotificationApiService.dart';
-
-class Notifications extends ConsumerWidget {
+class Notifications extends ConsumerStatefulWidget {
   const Notifications({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<Notifications> createState() => _NotificationsState();
+}
+
+class _NotificationsState extends ConsumerState<Notifications> {
+
+  @override
+  Widget build(BuildContext context) {
     final Notificationapiservice _notificationapi = Notificationapiservice();
     final notificationAsync = ref.watch(notificationServiceProvider);
 
     return Scaffold(
       appBar: AppBar(
-       
         title: const Text("Notifications"),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 12), 
+            padding: const EdgeInsets.only(right: 12),
             child: TextButton(
               onPressed: () async {
                 await _notificationapi.deleteallnotifications();
                 ref.refresh(notificationServiceProvider);
               },
-              child: const Text(
-                "Clear All",
-                style: TextStyle(
-                  color: Color.fromARGB(255, 229, 30, 30),
-                  decoration: TextDecoration.underline,
-                  decorationThickness: 2,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              child: Image.asset("assets/images/notification.png"),
             ),
           ),
         ],
@@ -47,10 +42,7 @@ class Notifications extends ConsumerWidget {
         data: (notifications) {
           if (notifications.isEmpty) {
             return const Center(
-              child: Text(
-                "No notifications",
-                style: TextStyle( ),
-              ),
+              child: Text("No notifications", style: TextStyle()),
             );
           }
 
@@ -77,10 +69,8 @@ class Notifications extends ConsumerWidget {
                   ),
 
                   onDismissed: (direction) async {
-                    // Remove the item locally first
                     notifications.removeAt(index);
                     await _notificationapi.deletesinglenotification(id: n.id);
-
                     ref.refresh(notificationServiceProvider);
                   },
 
@@ -127,10 +117,10 @@ class Notifications extends ConsumerWidget {
                               children: [
                                 Text(
                                   n.type,
-                                  style:  TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
-                                    color:Theme.of(context).textTheme.bodyMedium?.color
+                                    color: Colors.black,
                                   ),
                                 ),
                                 const SizedBox(height: 6),
@@ -139,6 +129,7 @@ class Notifications extends ConsumerWidget {
                                   style: const TextStyle(
                                     fontSize: 13,
                                     height: 1.4,
+                                        color: Colors.black,
                                   ),
                                 ),
                                 const SizedBox(height: 8),

@@ -5,9 +5,14 @@ import 'package:tech_app/model/RequestList_Model.dart';
 
 class RequestlistService {
   final _dio = DioClient.dio;
-  Future<RequestList> fetchrequestlist() async{
+  Future<RequestList> fetchrequestlist(String lang) async{
     try{
-       final response = await _dio.post('material/list');
+       final response = await _dio.post(
+        'material/list',
+        queryParameters: {
+          "lang":lang
+        }
+        );
          debugPrint("🟢 RESPONSE DATA: ${response.data}");
        return RequestList.fromJson(response.data);
     }on DioException catch(e){

@@ -7,6 +7,7 @@ import 'package:tech_app/routes/route_name.dart';
 import 'package:tech_app/widgets/inputs/app_text_field.dart';
 import 'package:tech_app/widgets/inputs/primary_button.dart';
 import 'package:tech_app/preferences/AppPerfernces.dart';
+
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
@@ -33,6 +34,7 @@ class _LoginViewState extends State<LoginView> {
           ),
         ),
         child: SafeArea(
+          bottom: false,
           child: SingleChildScrollView(
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             child: ConstrainedBox(
@@ -89,7 +91,8 @@ class _LoginViewState extends State<LoginView> {
                           AppTextField(
                             label: "Enter Password",
                             keyboardType: TextInputType.visiblePassword,
-                            surfixIcon: const Icon(Icons.visibility_off),
+          
+                             isPassword: true,
                             controller: _authcontroller.pasword,
                             validator: _authcontroller.validatePassword,
                           ),

@@ -16,12 +16,12 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.hgtech.nadistaff"
+    namespace = "com.nadistaff.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     defaultConfig {
-        applicationId = "com.hgtech.nadistaff"
+        applicationId = "com.nadistaff.app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

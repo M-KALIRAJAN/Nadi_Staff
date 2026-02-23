@@ -9,6 +9,8 @@ import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/core/network/dio_client.dart';
 import 'package:tech_app/core/utils/Time_Date.dart';
 import 'package:tech_app/core/utils/snackbar_helper.dart';
+import 'package:tech_app/l10n/app_localizations.dart';
+import 'package:tech_app/preferences/AppPerfernces.dart';
 import 'package:tech_app/provider/service_list_provider.dart';
 import 'package:tech_app/provider/service_timer_provider.dart';
 import 'package:tech_app/services/AcceptRequest_Service.dart';
@@ -70,7 +72,7 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
       SnackbarHelper.show(
         context,
         backgroundColor: AppColors.scoundry_clr,
-        message: status == "accept" ? "Service Accepted" : "Service Rejected",
+        message: status == "accept" ? AppLocalizations.of(context)!.serviceAccepted :  AppLocalizations.of(context)!.serviceRejected,
       );
       //   REFRESH SERVICE LIST API
       ref.invalidate(serviceListProvider);
@@ -87,15 +89,16 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
   // Start Work
   Future<void> startwork() async {
     try {
+      await Appperfernces.saveuserServiceId(widget.data.id);
       await _startwork.fetchstartwork(widget.data.id);
 
      // ✅ START GLOBAL TIMER
-    ref.read(serviceTimerProvider.notifier).start();
+    // ref.read(serviceTimerProvider.notifier).start();
 
       SnackbarHelper.show(
         context,
         backgroundColor: AppColors.scoundry_clr,
-        message: "Start Work",
+        message: AppLocalizations.of(context)?.startWork,
       );
 
       //  REFRESH SERVICE LIST
@@ -121,7 +124,8 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
             children: [
               // CUSTOMER & SERVICE DETAILS
               if (widget.data.assignmentStatus != "in-progress" &&
-                  widget.data.assignmentStatus != "completed") ...[
+                  widget.data.assignmentStatus != "completed" &&
+                   widget.data.assignmentStatus != "on-hold") ...[
                 _buildCustomerDetails(),
                 const SizedBox(height: 20),
                 _buildServiceDetails(),
@@ -141,7 +145,7 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
                     onPressed: () {
                       acceptrequest(status: "accept");
                     },
-                    text: "Accept",
+                    text: AppLocalizations.of(context)!.accepted,
                   ),
                 ),
                 Padding(
@@ -154,7 +158,7 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
                     onPressed: () {
                       _showRejectReasonSheet(context);
                     },
-                    text: "Reject",
+                    text: AppLocalizations.of(context)!.rejected,
                   ),
                 ),
               ],
@@ -167,7 +171,7 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
                     Width: double.infinity,
                     color: AppColors.scoundry_clr,
                     onPressed: startwork,
-                    text: "Start Work",
+                    text:   AppLocalizations.of(context)!.startWork  ,
                   ),
                 ),
               ],
@@ -192,7 +196,20 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
               ],
 
               // IN-PROGRESS OR ON-HOLD
-              if (widget.data.assignmentStatus == "in-progress" ||
+              if (widget.data.assignmentStatus == "in-progress" ) ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 15,
+                    vertical: 10,
+                  ),
+                  child: UpdateRequestView(
+                    serviceRequestId: widget.data.assignmentStatus,
+                    userServiceId: widget.data.id,
+                  ),
+                ),
+              ],
+
+                if (
                   widget.data.assignmentStatus == "on-hold") ...[
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -254,9 +271,9 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
                   child: Icon(Icons.person, color: AppColors.scoundry_clr),
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                 Expanded(
                   child: Text(
-                    "Customer Details",
+                    AppLocalizations.of(context)!.customerDetails,
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w500,
@@ -270,17 +287,17 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                _infoRow("Name", widget.data.userId.basicInfo.fullName),
+                _infoRow(AppLocalizations.of(context)!.name, widget.data.userId.basicInfo.fullName),
                 const Divider(),
-                _infoRow("Email", widget.data.userId.basicInfo.email),
+                _infoRow(AppLocalizations.of(context)!.email, widget.data.userId.basicInfo.email),
                 const Divider(),
                 _infoRow(
-                  "Phone",
+                  AppLocalizations.of(context)!.phone,
                   "+973 ${widget.data.userId.basicInfo.mobileNumber}",
                 ),
                 const Divider(),
                 _infoRow(
-                  "Address",
+                  AppLocalizations.of(context)!.address,
                   "building ${widget.data.address.building}, floor ${widget.data.address.floor}, aptNo ${widget.data.address.aptNo}",
                 ),
                 // const Divider(),
@@ -302,7 +319,7 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
                 //   ],
                 // ),
                 const Divider(),
-                _infoRow("Distance:", "7km"),
+                _infoRow(AppLocalizations.of(context)!.distance, "7km"),
               ],
             ),
           ),
@@ -347,9 +364,9 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
                   child: Icon(Icons.person, color: AppColors.scoundry_clr),
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                 Expanded(
                   child: Text(
-                    "Service Details",
+                   AppLocalizations.of(context)!.serviceDetails,
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w500,
@@ -363,12 +380,12 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                _infoRow("Service Type", widget.data.serviceId.name),
+                _infoRow(AppLocalizations.of(context)!.serviceType, widget.data.serviceId.name),
                 const Divider(),
-                _infoRow("Description", widget.data.feedback ?? ""),
+                _infoRow(AppLocalizations.of(context)!.description, widget.data.feedback ?? ""),
                 const Divider(),
                 _infoRow(
-                  "Status",
+                  AppLocalizations.of(context)!.status,
                   widget.data.assignmentStatus,
                   isStatus: true,
                 ),
@@ -376,8 +393,8 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
                     widget.data.media.isNotEmpty) ...[
                   const Divider(),
                   _infoRow(
-                    "View Media",
-                    "Tap to view",
+                   AppLocalizations.of(context)!.viewMedia,
+                   AppLocalizations.of(context)!.tapToView,
                     media: widget.data.media,
                   ),
                 ],
@@ -403,46 +420,79 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
                         });
                       }
                     },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Voice Note",
-                          style: TextStyle(fontSize: 12, color: Colors.grey),
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              _isPlaying ? "Playing..." : "Tap to play",
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.blue,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Icon(
-                              _isPlaying
-                                  ? Icons.pause_circle
-                                  : Icons.play_circle,
-                              color: Colors.blue,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                    child: 
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //      Text(
+                    //       AppLocalizations.of(context)!.voiceNote,
+                    //       style: TextStyle(fontSize: 12, color: Colors.grey),
+                    //     ),
+                    //     Row(
+                    //       children: [
+                    //         Text(
+                    //           _isPlaying ? AppLocalizations.of(context)!.playing: AppLocalizations.of(context)!.tapToPlay,
+                    //           style: const TextStyle(
+                    //             fontSize: 14,
+                    //             fontWeight: FontWeight.w500,
+                    //             color: Colors.blue,
+                    //             decoration: TextDecoration.underline,
+                    //           ),
+                    //         ),
+                    //         const SizedBox(width: 8),
+                    //         Icon(
+                    //           _isPlaying
+                    //               ? Icons.pause_circle
+                    //               : Icons.play_circle,
+                    //           color: Colors.blue,
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ],
+                    // ),
+                    Row(
+  children: [
+    Expanded(
+      child: Text(
+        AppLocalizations.of(context)!.voiceNote,
+        textAlign: TextAlign.start,
+        style: TextStyle(fontSize: 12, color: Colors.grey),
+      ),
+    ),
+    Row(
+      children: [
+        Text(
+          _isPlaying
+              ? AppLocalizations.of(context)!.playing
+              : AppLocalizations.of(context)!.tapToPlay,
+          textAlign: TextAlign.end,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Colors.blue,
+            decoration: TextDecoration.underline,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Icon(
+          _isPlaying ? Icons.pause_circle : Icons.play_circle,
+          color: Colors.blue,
+        ),
+      ],
+    ),
+  ],
+)
                   ),
                 ],
 
                 const Divider(),
                 _infoRow(
-                  "Date Required",
+                 AppLocalizations.of(context)!.dateRequired,
                   formatDateOnly(widget.data.scheduleService),
                 ),
                 const Divider(),
                 _infoRow(
-                  "Time Window",
+                  AppLocalizations.of(context)!.timeWindow,
                   widget.data.scheduleServiceTime?.isNotEmpty == true
                       ? widget.data.scheduleServiceTime!
                       : "00:00",
@@ -450,7 +500,7 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
 
                 const Divider(),
                 _infoRow(
-                  "Date Created",
+                  AppLocalizations.of(context)!.dateCreated,
                   formatDateForUI(widget.data.createdAt),
                 ),
               ],
@@ -488,74 +538,156 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
     }
   }
 
+  // Widget _infoRow(
+  //   String label,
+  //   String value, {
+  //   List<String>? media,
+  //   bool isStatus = false,
+  // }) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 6),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: [
+  //         Text(
+  //           label,
+  //           style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 12),
+  //         ),
+  //         Expanded(
+  //           child: Align(
+  //             alignment: Alignment.centerRight,
+  //             child: media != null && media.isNotEmpty
+  //                 ? InkWell(
+  //                     onTap: () {
+  //                       _showMediaDialog(context, media);
+  //                     },
+  //                     child: Text(
+  //                       value,
+  //                       style: const TextStyle(
+  //                         fontSize: 14,
+  //                         fontWeight: FontWeight.w500,
+  //                         color: Colors.blue,
+  //                         decoration: TextDecoration.underline,
+  //                       ),
+  //                     ),
+  //                   )
+  //                 : isStatus
+  //                 ? Container(
+  //                     padding: const EdgeInsets.symmetric(
+  //                       horizontal: 10,
+  //                       vertical: 4,
+  //                     ),
+  //                     decoration: BoxDecoration(
+  //                       color: _statusBgColor(value),
+  //                       borderRadius: BorderRadius.circular(20),
+  //                     ),
+  //                     child: Text(
+  //                       value.toUpperCase(),
+  //                       style: TextStyle(
+  //                         fontSize: 12,
+  //                         fontWeight: FontWeight.w600,
+  //                         color: _statusTextColor(value),
+  //                       ),
+  //                     ),
+  //                   )
+  //                 : Text(
+  //                     value,
+  //                     textAlign: TextAlign.right,
+  //                     maxLines: 5,
+  //                     overflow: TextOverflow.ellipsis,
+  //                     style: const TextStyle(
+  //                       fontSize: 14,
+  //                       fontWeight: FontWeight.w500,
+  //                     ),
+  //                   ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
   Widget _infoRow(
-    String label,
-    String value, {
-    List<String>? media,
-    bool isStatus = false,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
+  String label,
+  String value, {
+  List<String>? media,
+  bool isStatus = false,
+}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 6),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        /// LABEL
+        Expanded(
+          flex: 4,
+          child: Text(
             label,
-            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 12),
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodyMedium?.color,
+              fontSize: 12,
+            ),
           ),
-          Expanded(
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: media != null && media.isNotEmpty
-                  ? InkWell(
-                      onTap: () {
-                        _showMediaDialog(context, media);
-                      },
-                      child: Text(
-                        value,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    )
-                  : isStatus
-                  ? Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _statusBgColor(value),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        value.toUpperCase(),
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: _statusTextColor(value),
-                        ),
-                      ),
-                    )
-                  : Text(
+        ),
+
+        /// VALUE
+        Expanded(
+          flex: 6,
+          child: Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: media != null && media.isNotEmpty
+                ? InkWell(
+                    onTap: () {
+                      _showMediaDialog(context, media);
+                    },
+                    child: Text(
                       value,
-                      textAlign: TextAlign.right,
-                      maxLines: 5,
-                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.end,
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
                       ),
                     ),
-            ),
+                  )
+                : isStatus
+                    ? Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: _statusBgColor(value),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          value.toUpperCase(),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: _statusTextColor(value),
+                          ),
+                        ),
+                      )
+                    : Text(
+                        value,
+                        textAlign: TextAlign.end,
+                        maxLines: 5,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 
   // Media Dialog
   void _showMediaDialog(BuildContext context, List<String> mediaList) {
@@ -594,8 +726,8 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  "Media Files",
+                 Text(
+                  AppLocalizations.of(context)!.mediaFiles,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 12),
@@ -671,8 +803,8 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "Reject Reason",
+               Text(
+                AppLocalizations.of(context)!.rejectReason,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 12),
@@ -680,7 +812,7 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
                 controller: reasonController,
                 maxLines: 4,
                 decoration: InputDecoration(
-                  hintText: "Why are you rejecting this request?",
+                  hintText: AppLocalizations.of(context)!.rejectReasonHint,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -696,7 +828,7 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    text: "Cancel",
+                    text:  AppLocalizations.of(context)!.cancel,
                     Width: 133,
                   ),
                   PrimaryButton(
@@ -708,18 +840,18 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
                         SnackbarHelper.show(
                           context,
                           backgroundColor: Colors.red,
-                          message: "Please enter a reason",
+                          message: AppLocalizations.of(context)!.pleaseEnterReason,
                         );
                         return;
                       }
                       debugPrint("reason $reason");
                       acceptrequest(
-                        status: "reject",
+                        status: AppLocalizations.of(context)!.rejected,
                         reason: reason,
                       ); // pass reason only for reject
                       Navigator.pop(context);
                     },
-                    text: "Save",
+                    text: AppLocalizations.of(context)!.save,
                     Width: 133,
                   ),
                 ],

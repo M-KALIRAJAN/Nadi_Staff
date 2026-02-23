@@ -8,6 +8,8 @@ class Appperfernces {
   static const String _profileKey = "technician_profile";
   static const String _loginKey = "is_logged_in";
   static const String _fcmtokenkey ="fcmtoken";
+    static const String _userServiceIdKey = "user_service_id";
+    static const String _techIdKey = "technician_id";
   // ==== TOKEN ====
   static Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
@@ -18,6 +20,38 @@ class Appperfernces {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_tokenKey);
   }
+
+
+// ==== TECHNICIAN ID ====
+static Future<void> saveTechId(String techId) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString(_techIdKey, techId);
+}
+
+static Future<String?> getTechId() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString(_techIdKey);
+}
+
+static Future<void> clearTechId() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.remove(_techIdKey);
+}
+    // ==== USER SERVICE ID ====
+  static Future<void> saveuserServiceId(String userServiceId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_userServiceIdKey, userServiceId);
+  }
+
+  static Future<String?> getuserServiceId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_userServiceIdKey);
+  }
+
+  static Future<void> clearUserServiceId() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.remove(_userServiceIdKey);
+}
 // === FCM TOKEN ===
 static Future<void> saveFcmToken(String fcmToken) async {
   final prefs = await SharedPreferences.getInstance();

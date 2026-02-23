@@ -6,9 +6,14 @@ import 'package:tech_app/model/Inventory_Material_Model.dart';
 class InventorymaterialListService {
   final Dio _dio = DioClient.dio;
 
-  Future<InventoryMaterial> InventoryList() async {
+  Future<InventoryMaterial> InventoryList( String lang) async {
     try {
-      final response = await _dio.post('techie/inventory');
+      final response = await _dio.post(
+        'techie/inventory',
+        queryParameters: {
+          "lang":lang
+        }
+        );
 
 
       return InventoryMaterial.fromJson(response.data);

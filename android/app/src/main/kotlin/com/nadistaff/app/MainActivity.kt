@@ -1,4 +1,4 @@
-package com.hgtech.nadistaff
+package com.nadistaff.app
 
 import io.flutter.embedding.android.FlutterActivity
 

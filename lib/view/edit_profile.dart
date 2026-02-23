@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/core/network/dio_client.dart';
 import 'package:tech_app/core/utils/snackbar_helper.dart';
+import 'package:tech_app/l10n/app_localizations.dart';
 import 'package:tech_app/model/TechnicianProfile_Model.dart';
 import 'package:tech_app/services/EditProfile_Service.dart';
 import 'package:tech_app/widgets/inputs/app_text_field.dart';
@@ -75,7 +76,7 @@ class _EditProfileState extends State<EditProfile> {
       SnackbarHelper.show(
         context,
         backgroundColor: AppColors.scoundry_clr,
-        message: "Profile updated successfully",
+        message: AppLocalizations.of(context)!.profileUpdatedSuccessfully,
       );
       Navigator.pop(context, true);
     } catch (e) {
@@ -157,7 +158,7 @@ class _EditProfileState extends State<EditProfile> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Personal informarion",
+                         AppLocalizations.of(context)!.personalInformation,
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 18,
@@ -166,28 +167,28 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                         const SizedBox(height: 15),
 
-                        _label("First Name"),
+                        _label(AppLocalizations.of(context)!.firstName),
                         const SizedBox(height: 15),
                         AppTextField(
-                          label: "First Name",
+                          label: AppLocalizations.of(context)!.firstName,
                           controller: _firstname,
                         ),
                         const SizedBox(height: 10),
-                        _label("Last Name"),
+                        _label(AppLocalizations.of(context)!.lastName),
                         const SizedBox(height: 15),
-                        AppTextField(label: "Last Name", controller: _lastname),
+                        AppTextField(label: AppLocalizations.of(context)!.lastName, controller: _lastname),
 
                         const SizedBox(height: 10),
 
-                        _label("Email"),
+                        _label( AppLocalizations.of(context)!.email),
                         const SizedBox(height: 15),
-                        AppTextField(label: "Email", controller: _email),
+                        AppTextField(label:  AppLocalizations.of(context)!.email, controller: _email),
 
                         const SizedBox(height: 10),
-                        _label("Mobile Number"),
+                        _label(AppLocalizations.of(context)!.mobileNumber),
                         const SizedBox(height: 15),
                         AppTextField(
-                          label: "Mobile Number",
+                          label: AppLocalizations.of(context)!.mobileNumber,
                           controller: _mobile,
                         ),
                         const SizedBox(height: 20),
@@ -198,7 +199,7 @@ class _EditProfileState extends State<EditProfile> {
                           onPressed: () {
                             _updateprofile();
                           },
-                          text: "Save Changes",
+                          text: AppLocalizations.of(context)!.saveChanges,
                         ),
                       ],
                     ),

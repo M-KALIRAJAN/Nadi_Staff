@@ -15,10 +15,13 @@ class AuthService {
       );
 
       final token = response.data['token'];
+      final techId = response.data['id'];
       if (token != null) {
         await Appperfernces.saveToken(token);
       }
-
+     if (techId != null) {
+      await Appperfernces.saveTechId(techId);
+    }
       return response.data;
     } on DioException catch (e) {
       final message = e.response?.data['message']?.toString() ?? "Login failed";

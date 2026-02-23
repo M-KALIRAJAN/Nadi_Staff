@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/preferences/AppPerfernces.dart';
 import 'package:tech_app/routes/route_name.dart';
+import 'package:tech_app/services/Stream_Chat_Service.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -69,6 +70,10 @@ Future<void> _initNotifications() async {
     if (!mounted) return;
 
     if (isLoggedIn) {
+          final techId = await Appperfernces.getTechId(); // <-- get techId here
+    if (techId != null) {
+      await StreamChatService().connectUser(techId);
+    }
       context.go(RouteName.bottom_nav);
     } else {
       context.go(RouteName.login);

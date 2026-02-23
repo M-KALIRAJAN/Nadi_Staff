@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "409274060329",
-    "project_id": "nadi-staff-12be4",
-    "storage_bucket": "nadi-staff-12be4.firebasestorage.app"
+    "project_number": "284172182295",
+    "project_id": "nadi-staff-c8ce1",
+    "storage_bucket": "nadi-staff-c8ce1.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:409274060329:android:e4b8aeedb80f3e13c11638",
+        "mobilesdk_app_id": "1:284172182295:android:e48e866f3e4c24b58ecd52",
         "android_client_info": {
-          "package_name": "com.hgtech.nadistaff"
+          "package_name": "com.nadistaff.app"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA9OeyAlfL0ncdbEUdnnvUgv3ff4vxH1ys"
+          "current_key": "AIzaSyD6PW2_GN8tNcDs6Uju88BQdqhzOp2n-7g"
         }
       ],
       "services": {

@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/core/network/dio_client.dart';
+import 'package:tech_app/l10n/app_localizations.dart';
 import 'package:tech_app/model/ServiceList%20_Model.dart';
 
 class RequestCart extends StatelessWidget {
@@ -123,13 +124,20 @@ class RequestCart extends StatelessWidget {
           ),
 
           // VALUE
+          // Expanded(
+          //   flex: 5,
+          //   child: Align(
+          //     alignment: Alignment.centerRight,
+          //     child: _buildValueWidget(context, value, media, isStatus),
+          //   ),
+          // ),
           Expanded(
-            flex: 5,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: _buildValueWidget(context, value, media, isStatus),
-            ),
-          ),
+  flex: 5,
+  child: Align(
+    alignment: AlignmentDirectional.centerEnd,
+    child: _buildValueWidget(context, value, media, isStatus),
+  ),
+),
         ],
       ),
     );
@@ -179,7 +187,8 @@ class RequestCart extends StatelessWidget {
     // DEFAULT TEXT
     return Text(
       value,
-      textAlign: TextAlign.right,
+      // textAlign: TextAlign.right,
+        textAlign: TextAlign.end,
       maxLines: 4,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
@@ -193,21 +202,42 @@ class RequestCart extends StatelessWidget {
   Widget _sparePartRow(String label, String qty, String amount) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child:
+      //  Row(
+      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //   children: [
+      //     Column(
+      //       crossAxisAlignment: CrossAxisAlignment.start,
+      //       children: [
+      //         Text(label),
+      //         Row(
+      //           children: [Text("Qty:"), const SizedBox(width: 5), Text(qty)],
+      //         ),
+      //       ],
+      //     ),
+      //     Text(amount),
+      //   ],
+      // ),
+      Row(
+  children: [
+    Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Text(label, textAlign: TextAlign.start),
+          Row(
             children: [
-              Text(label),
-              Row(
-                children: [Text("Qty:"), const SizedBox(width: 5), Text(qty)],
-              ),
+              Text("Qty:"),
+              const SizedBox(width: 5),
+              Text(qty),
             ],
           ),
-          Text(amount),
         ],
       ),
+    ),
+    Text(amount, textAlign: TextAlign.end),
+  ],
+),
     );
   }
 
@@ -341,8 +371,8 @@ class RequestCart extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  "Media Files",
+                 Text(
+               AppLocalizations.of(context)!.mediaFiles,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 12),
@@ -419,22 +449,22 @@ class RequestCart extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _sectionHeader("Request Information", icon: Icons.receipt_long,),
+              _sectionHeader(AppLocalizations.of(context)!.requestInformation, icon: Icons.receipt_long,),
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    _infoRow(context, "Request ID", serviceRequestID),
+                    _infoRow(context, AppLocalizations.of(context)!.requestId, serviceRequestID),
                     const Divider(),
-                    _infoRow(context, "Service Type", servicetype),
+                    _infoRow(context,AppLocalizations.of(context)!.serviceType, servicetype),
                     // const Divider(),
                     // _infoRow(context, "Status", assignmentStatus),
                     const Divider(),
-                    _infoRow(context, "Client Name", clientname),
+                    _infoRow(context, AppLocalizations.of(context)!.clientName, clientname),
                     const Divider(),
                     _infoRow(
                       context,
-                      "Scheduled For",
+                     AppLocalizations.of(context)!.scheduledFor,
                       formatDate(scheduleService),
                     ),
                     // const Divider(),
@@ -448,18 +478,19 @@ class RequestCart extends StatelessWidget {
                       const Divider(),
                       _infoRow(
                         context,
-                        "View Media",
-                        "Tap to view",
+                        AppLocalizations.of(context)!.viewMedia,
+                        AppLocalizations.of(context)!.tapToView,
                         media: media,
                       ),
                     ],
                     const Divider(),
-                    _infoRow(context, "Created On", formatDate(createdAt)),
+                    _infoRow(context, AppLocalizations.of(context)!.createdOn, formatDate(createdAt)),
                     const Divider(),
                     Align(
-                      alignment: Alignment.centerLeft,
+                      // alignment: Alignment.centerLeft,
+                       alignment: AlignmentDirectional.centerStart,
                       child: Text(
-                        "Description",
+                       AppLocalizations.of(context)!.description,
                         style: TextStyle(
                           color: AppColors.lightgray_clr,
                           fontSize: 12,
@@ -493,13 +524,13 @@ class RequestCart extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _sectionHeader("Spare Parts Used", icon: Icons.build),
+                  _sectionHeader(AppLocalizations.of(context)!.sparePartsUsed, icon: Icons.build),
                   assignment.usedParts.isEmpty
-                      ? const Padding(
+                      ?  Padding(
                           padding: EdgeInsets.all(16.0),
                           child: Center(
                             child: Text(
-                              "No Spare Part Used",
+                              AppLocalizations.of(context)!.noSparePartUsed,
                               style: TextStyle(color: Colors.grey),
                             ),
                           ),
@@ -539,27 +570,27 @@ class RequestCart extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _sectionHeader("Completed Service", icon: Icons.check_circle),
+                  _sectionHeader(AppLocalizations.of(context)!.completedService, icon: Icons.check_circle),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       children: [
                         _infoRow(
                           context,
-                          "Time durartion :",
+                         AppLocalizations.of(context)!.timeDuration,
                           '${formatWorkDuration(assignment.workDuration)}',
                         ),
 
                         const Divider(),
                         _infoRow(
                           context,
-                          "Description :",
+                          AppLocalizations.of(context)!.description,
                           '${(assignment.notes) ?? "_"}',
                         ),
                         const Divider(),
                         _infoRow(
                           context,
-                          "Status :",
+                          AppLocalizations.of(context)!.status,
                           '${(assignment.status)}',
                           isStatus: true,
                         ),
@@ -569,8 +600,8 @@ class RequestCart extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
-                                "Fixed Media:",
+                               Text(
+                             AppLocalizations.of(context)!.fixedMedia,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 12,
@@ -580,8 +611,8 @@ class RequestCart extends StatelessWidget {
                               InkWell(
                                 onTap: () =>
                                     _showMediaDialog(context, assignmentMedia),
-                                child: const Text(
-                                  "Tap to view",
+                                child:  Text(
+                                AppLocalizations.of(context)!.tapToView,
                                   style: TextStyle(
                                     color: Colors.blue,
                                     decoration: TextDecoration.underline,
@@ -606,7 +637,7 @@ class RequestCart extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _sectionHeader("Total Service Cost"),
+              _sectionHeader(AppLocalizations.of(context)!.totalServiceCost),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(
@@ -623,7 +654,7 @@ class RequestCart extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text("Total Amount:"),
+                       Text(AppLocalizations.of(context)!.totalAmount),
                       Text(
                         "BHD: ${payment.toString()}",
                         style: TextStyle(

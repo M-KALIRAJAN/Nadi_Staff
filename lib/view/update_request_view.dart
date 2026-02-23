@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
+import 'package:tech_app/l10n/app_localizations.dart';
+import 'package:tech_app/preferences/AppPerfernces.dart';
 
 import 'package:tech_app/provider/service_timer_provider.dart';
 import 'package:tech_app/routes/route_name.dart';
+import 'package:tech_app/services/Timmer_Service.dart';
 import 'package:tech_app/services/Update_Service.dart';
 import 'package:tech_app/widgets/inputs/app_text_field.dart';
 import 'package:tech_app/widgets/inputs/primary_button.dart';
@@ -26,15 +29,15 @@ class UpdateRequestView extends ConsumerStatefulWidget {
   ConsumerState<UpdateRequestView> createState() => _UpdateRequestViewState();
 }
 
-class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
+class _UpdateRequestViewState extends ConsumerState<UpdateRequestView>   with WidgetsBindingObserver {
   Set<int> selectedIndexes = {
     0,
     1,
   }; // Accepted & In Progress selected by default
-  Timer? _timer;
+
   bool isLoading = false;
   bool isOnHold = false;
-  int _elapsedSeconds = 0;
+final TimerService _timerService = TimerService();
   final ImagePicker _picker = ImagePicker();
   List<XFile> selectedImages = [];
   final UpdateService _updateService = UpdateService();
@@ -49,47 +52,64 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
   void initState() {
     super.initState();
     selectedIndexes = {0, 1}; // Always selected
-    //  START GLOBAL TIMER
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(serviceTimerProvider.notifier).start();
-    });
+WidgetsBinding.instance.addObserver(this);
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    _loadTimer();
+  });
+
   }
 
-  void toggleOnHold() {
-    final notifier = ref.read(serviceTimerProvider.notifier);
-    final timerState = ref.read(serviceTimerProvider);
 
-    if (timerState.isRunning) {
-      notifier.pause();
-      setState(() => isOnHold = true);
-    } else {
-      notifier.start();
-      setState(() => isOnHold = false);
-    }
-  }
-
-  //  CALL API ONLY WHEN GOING ON HOLD (outside setState)
-  // if (goingOnHold) {
-  //   try {
-  //     await _updateService.fetchonhold(
-  //       userServiceId: widget.userServiceId,
-  //     );
-  //   } catch (e) {
-  //     debugPrint("OnHold API error: $e");
-  //   }
-  // }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     statustext.dispose();
     super.dispose();
   }
 
-  String formatDuration(Duration d) {
-    String two(int n) => n.toString().padLeft(2, '0');
-    return "${two(d.inHours)}:${two(d.inMinutes % 60)}:${two(d.inSeconds % 60)}";
+ @override
+void didChangeAppLifecycleState(AppLifecycleState state) {
+  if (state == AppLifecycleState.resumed) {
+    _loadTimer(); // sync with backend
   }
+}
 
+ Future<void> _loadTimer() async {
+    await Appperfernces.saveuserServiceId( widget.userServiceId);
+    try {
+      final response = await _timerService.fetchTimerData(
+        userServiceId: widget.userServiceId,
+      );
+
+      ref.read(timerProvider.notifier).initialize(
+            totalSeconds: response["totalSeconds"] ?? 0,
+            isRunning: response["isRunning"] ?? false,
+          );
+    } catch (e) {
+      debugPrint("Timer load error: $e");
+    }
+  }
+  Future<void> _toggleTimer() async {
+    final timerState = ref.read(timerProvider);
+
+    try {
+      if (timerState.isRunning) {
+        await _timerService.pauseTimer(
+          userServiceId: widget.userServiceId,
+        );
+      } else {
+        await _timerService.resumeTimer(
+          userServiceId: widget.userServiceId,
+        );
+      }
+
+      await _loadTimer(); // sync again
+    } catch (e) {
+      debugPrint("Toggle error: $e");
+    }
+  }
   Future<void> pickImage(ImageSource source) async {
     final XFile? image = await _picker.pickImage(
       source: source,
@@ -102,7 +122,6 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
       });
     }
   }
-
   Future<void> SaveUpdates() async {
     try {
       final files = selectedImages.map((xfile) => File(xfile.path)).toList();
@@ -114,12 +133,12 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
       );
 
       if (isCompletedSelected) {
-        ref.read(serviceTimerProvider.notifier).reset();
+        ref.read(timerProvider.notifier).reset();
       }
-
+   await Appperfernces.clearUserServiceId();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Update saved successfully"),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.updateSavedSuccessfully),
           backgroundColor: AppColors.scoundry_clr,
         ),
       );
@@ -132,9 +151,10 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
-    final timerState = ref.watch(serviceTimerProvider);
+   final timerState = ref.watch(timerProvider);
     return PopScope(
       canPop: true,
       onPopInvoked: (didPop) {
@@ -164,8 +184,8 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
                 ),
               ),
               const SizedBox(height: 10),
-              const Text(
-                "Timer:",
+               Text(
+                AppLocalizations.of(context)!.timer,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 10),
@@ -197,36 +217,39 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
                           size: 24,
                         ),
                         const SizedBox(width: 8),
-                        Text(
-                          formatDuration(timerState.elapsed),
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black
-                          ),
-                        ),
+Text(
+  timerState.formattedTime,
+  style: const TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+    color: Colors.black,
+  ),
+),
                       ],
                     ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: isOnHold ? Colors.green : Colors.red,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      onPressed: toggleOnHold,
-                      child: Text(
-                        isOnHold ? "Start" : "On Hold",
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
+                  ElevatedButton(
+  style: ElevatedButton.styleFrom(
+    backgroundColor:
+        timerState.isRunning ? Colors.red : Colors.green,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+  ),
+  onPressed: _toggleTimer,
+  child: Text(
+    timerState.isRunning
+        ? AppLocalizations.of(context)!.onHold
+        : AppLocalizations.of(context)!.start,
+    style: const TextStyle(color: Colors.white),
+  ),
+),
                   ],
                 ),
               ),
 
               const SizedBox(height: 10),
-              const Text(
-                "Updated Status:",
+               Text(
+                 AppLocalizations.of(context)!.updatedStatus,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 10),
@@ -285,20 +308,20 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
               ),
 
               const SizedBox(height: 15),
-              const Text(
-                "Add Notes:",
+               Text(
+                    AppLocalizations.of(context)!.addNotes,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 15),
               AppTextField(
                 maxLines: 3,
                 controller: statustext,
-                label: "description",
+                label: AppLocalizations.of(context)!.description,
               ),
               const SizedBox(height: 15),
 
-              const Text(
-                "Media Upload (optional):",
+               Text(
+                AppLocalizations.of(context)!.mediaUploadOptional,
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 5),
@@ -345,7 +368,7 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
                       color: AppColors.scoundry_clr,
                       isLoading: isLoading,
                       onPressed: SaveUpdates,
-                      text: "Save Updates",
+                      text:   AppLocalizations.of(context)!.saveUpdates,
                     )
                   : PrimaryButton(
                       radius: 15,
@@ -353,7 +376,7 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
                       height: 55,
                       color: Colors.grey,
                       onPressed: null, // disabled
-                      text: "Save Updates",
+                      text: AppLocalizations.of(context)!.saveUpdates,
                     ),
             ],
           ),
@@ -374,7 +397,7 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
             children: [
               ListTile(
                 leading: const Icon(Icons.camera_alt),
-                title: const Text("Camera"),
+                title:  Text( AppLocalizations.of(context)!.camera),
                 onTap: () {
                   Navigator.pop(context);
                   pickImage(ImageSource.camera);
@@ -382,7 +405,7 @@ class _UpdateRequestViewState extends ConsumerState<UpdateRequestView> {
               ),
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: const Text("Gallery"),
+                title:  Text(AppLocalizations.of(context)!.gallery),
                 onTap: () {
                   Navigator.pop(context);
                   pickImage(ImageSource.gallery);

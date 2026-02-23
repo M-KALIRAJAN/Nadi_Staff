@@ -1,0 +1,156 @@
+{
+      "@@locale": "en",
+
+  "incomeRequest": "Income Request",
+  "noRequestFound": "No request found",
+
+    "home": "Home",
+  "inventory": "Inventory",
+  "requestList": "Request List",
+  "profile": "Profile",
+
+    "myRequests": "My Requests",
+  "noRequestsFound": "No requests found",
+
+    "materialInventory": "Material Inventory",
+  "noMaterialFound": "No Material Found",
+
+     "addNewMaterial": "Add New Material",
+  "submitRequest": "Submit Request",
+  "materialNumber": "Material {index}",
+  "materialName": "Material Name",
+  "selectProduct": "Select Product",
+  "quantityNeeded": "Quantity Needed",
+  "exampleQuantity": "e.g 25",
+  "fillAllMaterials": "Please fill all materials",
+  "pleaseSelectProduct": "Please select product",
+  "enterQuantity": "Enter quantity",
+  "materialRequestSuccess": "Material requests submitted successfully",
+
+ "bulkRequest": "Bulk Request",
+   "optionalNotes": "Optional Notes",
+  "optionalNotesHint": "If other issue please mention here",
+  "addBulkRequest": "Add Bulk Request +",
+
+
+  "requestMaterial": "Request Material",
+
+
+   "materialRequest": "Material Request",
+
+     "personalInformation": "Personal Information",
+  "saveChanges": "Save Changes",
+  "profileUpdatedSuccessfully": "Profile updated successfully",
+
+  "countLabel": "Count:",
+     "priceLabel": "| Price:", 
+
+       "all": "All",
+  "accepted": "Accepted",
+  "inProgress": "In-progress",
+  "pending": "Pending",
+  "completed": "Completed",
+  "rejected": "Rejected", 
+
+
+    "accept": "Accept",
+  "reject": "Reject",
+  "rejectReason": "Reject Reason",
+  "rejectReasonHint": "Why are you rejecting this request?",
+  "save": "Save",
+  "enterReasonError": "Please enter a reason", 
+
+    "serviceAccepted": "Service Accepted",
+  "serviceRejected": "Service Rejected",
+
+   "startWork": "Start Work",
+  "customerDetails": "Customer Details",
+  "serviceDetails": "Service Details",
+    
+
+    "name": "Name",
+  "phone": "Phone",
+  "address": "Address",
+  "distance": "Distance",
+  "serviceType": "Service Type",
+  "description": "Description",
+  "status": "Status",
+  "viewMedia": "View Media",
+  "tapToView": "Tap to view",
+  "voiceNote": "Voice Note",
+  "playing": "Playing...",
+  "tapToPlay": "Tap to play",
+  "dateRequired": "Date Required",
+  "timeWindow": "Time Window",
+  "dateCreated": "Date Created",
+  "mediaFiles": "Media Files",
+  "pleaseEnterReason": "Please enter a reason", 
+
+    "requestInformation": "Request Information",
+  "requestId": "Request ID",
+  "clientName": "Client Name",
+  "scheduledFor": "Scheduled For",
+  "createdOn": "Created On",
+  "sparePartsUsed": "Spare Parts Used",
+  "noSparePartUsed": "No Spare Part Used",
+  "completedService": "Completed Service",
+  "timeDuration": "Time duration",
+  "fixedMedia": "Fixed Media",
+  "totalServiceCost": "Total Service Cost",
+  "totalAmount": "Total Amount", 
+
+
+    "timer": "Timer",
+  "start": "Start",
+  "onHold": "On Hold",
+  "updatedStatus": "Updated Status",
+  "addNotes": "Add Notes",
+  "mediaUploadOptional": "Media Upload (optional)",
+  "imagesSelectedCount": "{count} / 10 images selected",
+  "@imagesSelectedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "saveUpdates": "Save Updates",
+  "updateSavedSuccessfully": "Update saved successfully",
+  "camera": "Camera",
+  "gallery": "Gallery",
+
+ 
+
+  "sparePartsUsedCount": "Spare Parts Used ({count})",
+  "@sparePartsUsedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "error": "Error",
+  "noSparePartsAvailable": "No spare parts available",
+  "selectedParts": "Selected parts",
+  "proceedToPayment": "Proceed to Payment",
+  "availableParts": "Available Parts",
+  "paymentSummary": "Payment Summary",
+  "total": "Total",
+
+
+   "profileManagement": "Profile Management",
+  "logOut": "Log Out",
+  "accountDelete": "Account Delete",
+  "deleteAccount": "Delete Account",
+  "selectReasonDelete": "Select a reason before deleting your account:",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "pleaseSelectReason": "Please select a reason",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "email": "Email",
+  "mobileNumber": "Mobile Number",
+  "enablePushNotifications": "Enable Push Notifications",
+  "receiveAlerts": "Receive real-time alerts and updates",
+  "darkMode": "Dark Mode",
+  "reduceEyeStrain": "Reduce eye strain in low light",
+  "privacyControls": "Privacy Controls",
+  "manageDataSharing": "Manage data sharing preferences",
+  "language": "Language"
+}

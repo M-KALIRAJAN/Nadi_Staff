@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/core/utils/snackbar_helper.dart';
+import 'package:tech_app/l10n/app_localizations.dart';
 import 'package:tech_app/model/Inventory_Material_Model.dart';
+import 'package:tech_app/provider/language_provider.dart';
 import 'package:tech_app/routes/route_name.dart';
 import 'package:tech_app/services/MaterialRequest_service.dart';
 import 'package:tech_app/services/ProductList.dart';
+import 'package:tech_app/widgets/header.dart';
 import 'package:tech_app/widgets/inputs/app_dropdown.dart';
 import 'package:tech_app/widgets/inputs/app_text_field.dart';
 import 'package:tech_app/widgets/inputs/primary_button.dart';
 
-class MaterialRequest extends StatefulWidget {
+class MaterialRequest extends ConsumerStatefulWidget {
   const MaterialRequest({super.key});
 
   @override
-  State<MaterialRequest> createState() => _MaterialRequestState();
+  ConsumerState<MaterialRequest> createState() => _MaterialRequestState();
 }
 
-class _MaterialRequestState extends State<MaterialRequest> {
+class _MaterialRequestState extends ConsumerState<MaterialRequest> {
   Product? selectedProduct;
   List<Product> products = [];
   bool isLoading = false;
@@ -33,13 +37,17 @@ class _MaterialRequestState extends State<MaterialRequest> {
     loadProducts();
   }
 
-  Future<void> loadProducts() async {
-    final result = await _productlist.fetchproductlist();
+Future<void> loadProducts() async {
+  final lang = ref.read(languageProvider).languageCode;
 
-    setState(() {
-      products = result;
-    });
-  }
+  final result = await _productlist.fetchproductlist(lang);
+
+  if (!mounted) return;
+
+  setState(() {
+    products = result;
+  });
+}
 
   Future<void> submitrequest() async {
     try {
@@ -71,6 +79,9 @@ class _MaterialRequestState extends State<MaterialRequest> {
         backgroundColor: Colors.red,
         message: e.toString(),
       );
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -78,6 +89,15 @@ class _MaterialRequestState extends State<MaterialRequest> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+         appBar: AppBar(
+        backgroundColor: AppColors.scoundry_clr,
+         iconTheme: const IconThemeData(
+    color: Colors.white,
+  ),
+        title:  Text(AppLocalizations.of(context)!.materialRequest,style: TextStyle(color: Colors.white),),
+        centerTitle: true,
+        elevation: 0,
+      ),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
@@ -87,10 +107,11 @@ class _MaterialRequestState extends State<MaterialRequest> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Material Name", style: TextStyle(fontSize: 15)),
+        
+                  Text(AppLocalizations.of(context)!.materialName, style: TextStyle(fontSize: 15)),
                   const SizedBox(height: 15),
                   AppDropdown(
-                    label: "Select Product",
+                    label:AppLocalizations.of(context)!.selectProduct,
                     items: products.map((e) => e.productName).toList(),
                     value: selectedProduct?.productName,
                     validator: (value) =>
@@ -106,25 +127,25 @@ class _MaterialRequestState extends State<MaterialRequest> {
                   ),
                   const SizedBox(height: 25),
 
-                  Text("Quantity Needed"),
+                  Text(AppLocalizations.of(context)!.quantityNeeded),
                   const SizedBox(height: 15),
                   AppTextField(
-                    label: "# e.g 25",
+                    label: AppLocalizations.of(context)!.exampleQuantity,
                     controller: _quantity,
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Enter the quantity";
+                        return AppLocalizations.of(context)!.enterQuantity;
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 25),
 
-                  Text("Optional Notes"),
+                  Text(AppLocalizations.of(context)!.optionalNotes),
                   const SizedBox(height: 15),
                   AppTextField(
-                    label: "if other issuse please mention here",
+                    label: AppLocalizations.of(context)!.optionalNotesHint,
                     controller: _optionalissuse,
                     maxLines: 4,
                   ),
@@ -138,7 +159,7 @@ class _MaterialRequestState extends State<MaterialRequest> {
                     onPressed: () {
                       context.push(RouteName.bulk_request);
                     },
-                    text: "Add Bulk Request",
+                    text:AppLocalizations.of(context)!.addBulkRequest,
                     icon: Icon(Icons.add, size: 25, color: Colors.white),
                   ),
                   const SizedBox(height: 20),
@@ -153,7 +174,7 @@ class _MaterialRequestState extends State<MaterialRequest> {
                         submitrequest();
                       }
                     },
-                    text: "Submit Request",
+                    text: AppLocalizations.of(context)!.submitRequest,
                   ),
                 ],
               ),

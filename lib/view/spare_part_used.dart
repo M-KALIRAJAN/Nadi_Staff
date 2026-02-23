@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
+import 'package:tech_app/l10n/app_localizations.dart';
 import 'package:tech_app/model/OurSpareParts_Model.dart';
 import 'package:tech_app/model/UpdatePayment_Model.dart';
 import 'package:tech_app/provider/Ourspareparts_Provider.dart';
@@ -135,8 +136,8 @@ class _SparePartUsedState extends ConsumerState<SparePartUsed> {
 
                             // Wrap the text with a Consumer / sparePartsAsync
                             sparePartsAsync.when(
-                              loading: () => const Text(
-                                "Spare Parts Used",
+                              loading: () =>  Text(
+                               AppLocalizations.of(context)!.sparePartsUsed,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -180,7 +181,7 @@ class _SparePartUsedState extends ConsumerState<SparePartUsed> {
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
-                                    "No spare parts available",
+                                    AppLocalizations.of(context)!.noSparePartUsed,
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
@@ -196,8 +197,8 @@ class _SparePartUsedState extends ConsumerState<SparePartUsed> {
 
                         const SizedBox(height: 20),
 
-                        const Text(
-                          "Selected parts",
+                         Text(
+                          AppLocalizations.of(context)!.selectedParts,
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 20),
@@ -341,7 +342,7 @@ class _SparePartUsedState extends ConsumerState<SparePartUsed> {
                   height: 50,
                   radius: 12,
                   color: AppColors.scoundry_clr,
-                  text: "Proceed to Payment",
+                  text: AppLocalizations.of(context)!.proceedToPayment,
                   onPressed: _proceedToPayment,
                 ),
               ],
@@ -362,7 +363,7 @@ class _SparePartUsedState extends ConsumerState<SparePartUsed> {
       ),
       child: Column(
         children: [
-          _cardHeader("Available Parts", AppColors.primary_clr),
+          _cardHeader(AppLocalizations.of(context)!.availableParts, AppColors.primary_clr),
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -413,13 +414,13 @@ class _SparePartUsedState extends ConsumerState<SparePartUsed> {
       ),
       child: Column(
         children: [
-          _cardHeader("Payment Summary", AppColors.lightgray_clr),
+          _cardHeader(AppLocalizations.of(context)!.paymentSummary, AppColors.lightgray_clr),
           Padding(
             padding: const EdgeInsets.all(12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Total"),
+                 Text(AppLocalizations.of(context)!.total),
                 Text(
                   "BHD ${totalAmount.toStringAsFixed(2)}",
                   style: const TextStyle(

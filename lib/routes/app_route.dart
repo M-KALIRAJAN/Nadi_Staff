@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:tech_app/model/TechnicianProfile_Model.dart';
 import 'package:tech_app/routes/route_name.dart';
+import 'package:tech_app/view/ChatDetailsScreen.dart';
 import 'package:tech_app/view/SplashScreen.dart';
 import 'package:tech_app/view/auth/forgot_password.dart';
 import 'package:tech_app/view/auth/login_view.dart';
@@ -36,6 +37,22 @@ final Approute = GoRouter(
       path: RouteName.inventory_list,
       builder: (context, state) => const MaterialInventoryView(),
     ),
+      GoRoute(
+  path: "/chatDetails",
+  builder: (context, state) {
+
+    final data = state.extra as Map<String, dynamic>;
+
+    final adminId = data["id"] as String?;
+    final adminName = data["name"] as String?;
+
+    return ChatDetailsScreen(
+      adminId: adminId,
+      adminName: adminName,
+    );
+  },
+),
+
     GoRoute(
       path: RouteName.sparepart_used,
       builder: (context, state) {

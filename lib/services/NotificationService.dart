@@ -1,6 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-class Notificationservice {
+class NotificationService {
   static final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
 
@@ -8,8 +8,17 @@ class Notificationservice {
     const AndroidInitializationSettings androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
+    const DarwinInitializationSettings iosSettings =
+        DarwinInitializationSettings(
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        );
+
     const InitializationSettings settings = InitializationSettings(
       android: androidSettings,
+      iOS: iosSettings, // ✅ ADD THIS
+      macOS: iosSettings, // ✅ mac uses same Darwin settings
     );
 
     await _plugin.initialize(settings);
@@ -19,9 +28,10 @@ class Notificationservice {
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'high_importance_channel',
       'High Importance Notifications',
-      description: 'Used for Service notifications',
+      description: 'Used for OTP notifications',
       importance: Importance.high,
     );
+
     await _plugin
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
@@ -40,9 +50,11 @@ class Notificationservice {
           importance: Importance.high,
           priority: Priority.high,
         );
+
     const NotificationDetails details = NotificationDetails(
       android: androidDetails,
     );
+
     await _plugin.show(
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
       title,

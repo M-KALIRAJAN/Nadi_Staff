@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
+import 'package:tech_app/l10n/app_localizations.dart';
 
 class MaterialCart extends StatelessWidget {
   final String productName;
@@ -54,7 +55,7 @@ class MaterialCart extends StatelessWidget {
               const SizedBox(height: 4),
               Text.rich(
                 TextSpan(
-                  text: "Count: ", 
+                  text: AppLocalizations.of(context)!.countLabel, 
                   style: const TextStyle(
                     fontSize: 12,
                     color: Colors.black87,
@@ -68,8 +69,8 @@ class MaterialCart extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const TextSpan(
-                      text: " | Price: ",
+                     TextSpan(
+                      text: AppLocalizations.of(context)!.priceLabel,
                       style: TextStyle(
                         color: Colors.black87,
                         fontWeight: FontWeight.w500,

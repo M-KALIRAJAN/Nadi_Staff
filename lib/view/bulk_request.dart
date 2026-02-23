@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/core/utils/snackbar_helper.dart';
+import 'package:tech_app/l10n/app_localizations.dart';
 import 'package:tech_app/model/Inventory_Material_Model.dart';
+import 'package:tech_app/provider/language_provider.dart';
 import 'package:tech_app/routes/route_name.dart';
 import 'package:tech_app/services/MaterialRequest_service.dart';
 import 'package:tech_app/services/ProductList.dart';
+import 'package:tech_app/widgets/header.dart';
 import 'package:tech_app/widgets/inputs/app_dropdown.dart';
 import 'package:tech_app/widgets/inputs/app_text_field.dart';
 import 'package:tech_app/widgets/inputs/primary_button.dart';
 
-class BulkRequest extends StatefulWidget {
+class BulkRequest extends ConsumerStatefulWidget {
   const BulkRequest({super.key});
 
   @override
-  State<BulkRequest> createState() => _BulkRequestState();
+  ConsumerState<BulkRequest> createState() => _BulkRequestState();
 }
 
-class _BulkRequestState extends State<BulkRequest> {
+class _BulkRequestState extends ConsumerState<BulkRequest> {
   final Productlist _productlist = Productlist();
   bool isLoading = false;
   List<Product> products = []; // master product list
@@ -36,7 +40,9 @@ class _BulkRequestState extends State<BulkRequest> {
   }
 
   Future<void> loadProducts() async {
-    final result = await _productlist.fetchproductlist();
+    final lang = ref.read(languageProvider).languageCode;
+    final result = await _productlist.fetchproductlist(lang);
+    if (!mounted) return;
     setState(() {
       products = result;
     });
@@ -84,6 +90,14 @@ class _BulkRequestState extends State<BulkRequest> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        backgroundColor: AppColors.scoundry_clr,
+        foregroundColor: Colors.white,
+        centerTitle: true,
+        elevation: 0,
+        title: Text(AppLocalizations.of(context)!.bulkRequest),
+      ),
+
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(12),
@@ -107,11 +121,12 @@ class _BulkRequestState extends State<BulkRequest> {
                     );
                   });
                 },
-
-                text: "Add New Material",
+                text: AppLocalizations.of(context)!.addNewMaterial,
                 icon: Icon(Icons.add, size: 25, color: Colors.white),
               ),
+
               const SizedBox(height: 10),
+
               PrimaryButton(
                 radius: 12,
                 color: AppColors.scoundry_clr,
@@ -121,7 +136,7 @@ class _BulkRequestState extends State<BulkRequest> {
                 onPressed: () {
                   submitrequest();
                 },
-                text: "Submit Request",
+                text: AppLocalizations.of(context)!.submitRequest,
               ),
             ],
           ),
@@ -190,10 +205,10 @@ class _BulkRequestState extends State<BulkRequest> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Material Name"),
+                Text(AppLocalizations.of(context)!.materialName),
                 const SizedBox(height: 8),
                 AppDropdown(
-                  label: "Select Product",
+                  label: AppLocalizations.of(context)!.selectProduct,
                   items: products.map((e) => e.productName).toList(),
                   value: selection.product?.productName,
                   onChanged: (value) {
@@ -209,11 +224,11 @@ class _BulkRequestState extends State<BulkRequest> {
                 ),
 
                 const SizedBox(height: 16),
-                const Text("Quantity Needed"),
+                Text(AppLocalizations.of(context)!.quantityNeeded),
                 const SizedBox(height: 8),
 
                 AppTextField(
-                  label: "e.g 25",
+                  label: AppLocalizations.of(context)!.exampleQuantity,
                   controller: selection.quantityController,
                   keyboardType: TextInputType.number,
                   validator: (value) {

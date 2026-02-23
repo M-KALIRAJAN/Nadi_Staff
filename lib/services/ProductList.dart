@@ -5,9 +5,15 @@ import 'package:tech_app/model/Inventory_Material_Model.dart';
 class Productlist {
   final _dio = DioClient.dio;
 
-  Future<List<Product>> fetchproductlist() async {
+  Future<List<Product>> fetchproductlist( String lang) async {
     try {
-      final response = await _dio.get('inventory/product-list');
+
+      final response = await _dio.get(
+        'inventory/product-list',
+        queryParameters: {
+          "lang":lang
+        }
+        );
       final List list = response.data['data'];
       return list.map((e) => Product.fromJson(e)).toList();
     } on DioException catch (e) {

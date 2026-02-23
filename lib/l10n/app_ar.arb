@@ -1,0 +1,153 @@
+{
+      "@@locale": "ar",
+
+  "incomeRequest": "طلب الدخل",
+  "noRequestFound": "لم يتم العثور على أي طلب",
+
+  "home": "الرئيسية",
+  "inventory": "المخزون",
+  "requestList": "قائمة الطلبات",
+  "profile": "الملف الشخصي",
+
+    "myRequests": "طلباتي",
+  "noRequestsFound": "لا توجد طلبات",
+
+    "materialInventory": "مخزون المواد",
+  "noMaterialFound": "لا توجد مواد",
+
+    "addNewMaterial": "إضافة مادة جديدة",
+  "submitRequest": "إرسال الطلب",
+  "materialNumber": "المادة {index}",
+  "materialName": "اسم المادة",
+  "selectProduct": "اختر المنتج",
+  "quantityNeeded": "الكمية المطلوبة",
+  "exampleQuantity": "مثال 25",
+  "fillAllMaterials": "يرجى ملء جميع المواد",
+  "pleaseSelectProduct": "يرجى اختيار المنتج",
+  "enterQuantity": "أدخل الكمية",
+  "materialRequestSuccess": "تم إرسال طلبات المواد بنجاح",
+
+    "bulkRequest": "طلب جماعي",
+      "materialRequest": "طلب المواد",
+
+    "personalInformation": "المعلومات الشخصية",
+  "saveChanges": "حفظ التغييرات",
+  "profileUpdatedSuccessfully": "تم تحديث الملف الشخصي بنجاح",
+
+   "countLabel": "الكمية:",
+  "priceLabel": "| السعر:",
+  "optionalNotes": "ملاحظات اختيارية",
+  "optionalNotesHint": "إذا كانت هناك مشكلة أخرى يرجى ذكرها هنا",
+  "addBulkRequest": "إضافة طلب جماعي +",
+  
+
+   "requestMaterial": "طلب المواد", 
+
+     "all": "الكل",
+  "accepted": "مقبول",
+  "inProgress": "قيد التنفيذ",
+  "pending": "قيد الانتظار",
+  "completed": "مكتمل",
+  "rejected": "مرفوض", 
+
+    "accept": "قبول",
+  "reject": "رفض",
+  "rejectReason": "سبب الرفض",
+  "rejectReasonHint": "لماذا تقوم برفض هذا الطلب؟",
+  "save": "حفظ",
+  "enterReasonError": "يرجى إدخال سبب",
+ 
+    "startWork": "بدء العمل",
+  "customerDetails": "تفاصيل العميل",
+  "serviceDetails": "تفاصيل الخدمة",
+
+
+    "name": "الاسم",
+  "phone": "الهاتف",
+  "address": "العنوان",
+  "distance": "المسافة",
+  "serviceType": "نوع الخدمة",
+  "description": "الوصف",
+  "status": "الحالة",
+  "viewMedia": "عرض الوسائط",
+  "tapToView": "اضغط للعرض",
+  "voiceNote": "ملاحظة صوتية",
+  "playing": "يتم التشغيل...",
+  "tapToPlay": "اضغط للتشغيل",
+  "dateRequired": "التاريخ المطلوب",
+  "timeWindow": "الوقت",
+  "dateCreated": "تاريخ الإنشاء",
+  "mediaFiles": "ملفات الوسائط",
+  "pleaseEnterReason": "يرجى إدخال السبب",
+
+  "serviceAccepted": "تم قبول الخدمة",
+  "serviceRejected": "تم رفض الخدمة",
+
+
+    "requestInformation": "معلومات الطلب",
+  "requestId": "معرف الطلب",
+  "clientName": "اسم العميل",
+  "scheduledFor": "مجدول لـ",
+  "createdOn": "تاريخ الإنشاء",
+  "sparePartsUsed": "قطع الغيار المستخدمة",
+  "noSparePartUsed": "لم يتم استخدام قطع غيار",
+  "completedService": "الخدمة المكتملة",
+  "timeDuration": "مدة الوقت",
+  "fixedMedia": "الوسائط الثابتة",
+  "totalServiceCost": "إجمالي تكلفة الخدمة",
+  "totalAmount": "المبلغ الإجمالي",
+ 
+
+    "timer": "المؤقت",
+  "start": "ابدأ",
+  "onHold": "قيد الانتظار",
+  "updatedStatus": "الحالة المحدثة",
+  "addNotes": "إضافة ملاحظات",
+  "mediaUploadOptional": "رفع الوسائط (اختياري)",
+  "imagesSelectedCount": "{count} / 10 صور تم اختيارها",
+  "@imagesSelectedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "saveUpdates": "حفظ التحديثات",
+  "updateSavedSuccessfully": "تم حفظ التحديث بنجاح",
+  "camera": "الكاميرا",
+  "gallery": "المعرض", 
+
+
+  "sparePartsUsedCount": "تم استخدام قطع الغيار ({count})",
+  "@sparePartsUsedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "error": "خطأ",
+  "noSparePartsAvailable": "لا توجد قطع غيار متاحة",
+  "selectedParts": "الأجزاء المختارة",
+  "proceedToPayment": "المتابعة إلى الدفع",
+  "availableParts": "الأجزاء المتاحة",
+  "paymentSummary": "ملخص الدفع",
+  "total": "الإجمالي",
+
+
+    "profileManagement": "إدارة الملف الشخصي",
+  "logOut": "تسجيل الخروج",
+  "accountDelete": "حذف الحساب",
+  "deleteAccount": "حذف الحساب",
+  "selectReasonDelete": "اختر سببًا قبل حذف حسابك:",
+  "cancel": "إلغاء",
+  "delete": "حذف",
+  "pleaseSelectReason": "يرجى اختيار سبب",
+  "firstName": "الاسم الأول",
+  "lastName": "اسم العائلة",
+  "email": "البريد الإلكتروني",
+  "mobileNumber": "رقم الهاتف",
+  "enablePushNotifications": "تمكين الإشعارات الفورية",
+  "receiveAlerts": "تلقي التنبيهات والتحديثات الفورية",
+  "darkMode": "الوضع الداكن",
+  "reduceEyeStrain": "تقليل إجهاد العين في الضوء المنخفض",
+  "privacyControls": "إعدادات الخصوصية",
+  "manageDataSharing": "إدارة تفضيلات مشاركة البيانات",
+  "language": "اللغة"
+}

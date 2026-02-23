@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-
 import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/core/utils/Time_Date.dart';
 import 'package:tech_app/model/ServiceList%20_Model.dart';
+import 'package:tech_app/preferences/AppPerfernces.dart';
 import 'package:tech_app/provider/service_timer_provider.dart';
+import 'package:tech_app/services/Timmer_Service.dart';
 
-class IncomeCard extends ConsumerWidget {
+class IncomeCard extends ConsumerStatefulWidget {
   final String name;
   final String service;
   final String? issue;
@@ -16,6 +16,7 @@ class IncomeCard extends ConsumerWidget {
   final VoidCallback onClick;
   final int? payment;
   final List<Assignment> assignments;
+
   const IncomeCard({
     super.key,
     required this.name,
@@ -29,21 +30,54 @@ class IncomeCard extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final timer = ref.watch(serviceTimerProvider);
+  ConsumerState<IncomeCard> createState() => _IncomeCardState();
+}
 
-    void logAssignments() {
-      if (assignments.isEmpty) {
-        debugPrint("❌ No assignments found");
-        return;
-      }
+class _IncomeCardState extends ConsumerState<IncomeCard> {
+  final TimerService _timerService = TimerService();
 
-      debugPrint("========== ASSIGNMENTS DEBUG ==========");
+  @override
+  void initState() {
+    super.initState();
+    _loadTimerOnHome();
+  }
 
-      for (int i = 0; i < assignments.length; i++) {
-        final a = assignments[i];
+  Future<void> _loadTimerOnHome() async {
+    final userServiceId = await Appperfernces.getuserServiceId();
 
-        debugPrint("""
+    if (userServiceId == null || userServiceId.isEmpty) {
+      debugPrint("UserServiceId is null");
+      return;
+    }
+
+    try {
+      final response = await _timerService.fetchTimerData(
+        userServiceId: userServiceId,
+      );
+
+      ref
+          .read(timerProvider.notifier)
+          .initialize(
+            totalSeconds: response["totalSeconds"] ?? 0,
+            isRunning: response["isRunning"] ?? false,
+          );
+    } catch (e) {
+      debugPrint("Timer load error: $e");
+    }
+  }
+
+  void logAssignments() {
+    if (widget.assignments.isEmpty) {
+      debugPrint("❌ No assignments found");
+      return;
+    }
+
+    debugPrint("========== ASSIGNMENTS DEBUG ==========");
+
+    for (int i = 0; i < widget.assignments.length; i++) {
+      final a = widget.assignments[i];
+
+      debugPrint("""
 🧾 Assignment #${i + 1}
 ---------------------------------
 Technician ID : ${a.technicianId}
@@ -53,28 +87,31 @@ Work Duration : ${a.workDuration}
 PaymentRaised : ${a.paymentRaised}
 WorkStartedAt : ${a.workStartedAt}
 UpdatedAt     : ${a.updatedAt}
-
 Media         : ${a.media}
 Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.total}').toList()}
 ---------------------------------
 """);
-      }
-
-      debugPrint("========== END ASSIGNMENTS ==========");
     }
+
+    debugPrint("========== END ASSIGNMENTS ==========");
+  }
+
+  String formatWorkDuration(int seconds) {
+    final hours = seconds ~/ 3600;
+    final minutes = (seconds % 3600) ~/ 60;
+    return '${hours}h ${minutes}m';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final assignment = widget.assignments.isNotEmpty
+        ? widget.assignments.first
+        : null;
+
+    final timerState = ref.watch(timerProvider);
 
     logAssignments();
-    String formatWorkDuration(int seconds) {
-      final hours = seconds ~/ 3600;
-      final minutes = (seconds % 3600) ~/ 60;
-      return '${hours}h ${minutes}m';
-    }
 
-    String format(Duration d) =>
-        "${d.inHours.toString().padLeft(2, '0')}:"
-        "${(d.inMinutes % 60).toString().padLeft(2, '0')}:"
-        "${(d.inSeconds % 60).toString().padLeft(2, '0')}";
-    final assignment = assignments.isNotEmpty ? assignments.first : null;
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
@@ -82,8 +119,8 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
         boxShadow: [
           BoxShadow(
             color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.white.withOpacity(0.25) 
-                : Colors.black.withOpacity(0.15), 
+                ? Colors.white.withOpacity(0.25)
+                : Colors.black.withOpacity(0.15),
 
             blurRadius: 8,
             offset: Offset(0, 4),
@@ -94,7 +131,7 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           InkWell(
-            onTap: onClick,
+            onTap: widget.onClick,
             child: Container(
               height: 55,
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -109,7 +146,7 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
                 children: [
                   Expanded(
                     child: Text(
-                      issue ?? "-",
+                      widget.issue ?? "-",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -135,11 +172,11 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
                     Expanded(
                       child: _infoRow(
                         image: Image.asset("assets/images/person.png"),
-                        text: name,
+                        text: widget.name,
                       ),
                     ),
 
-                    if (assignmentStatus.toLowerCase() == 'in-progress')
+                    if (widget.assignmentStatus.toLowerCase() == 'in-progress')
                       Row(
                         children: [
                           Icon(
@@ -149,7 +186,7 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            format(timer.elapsed),
+                            timerState.formattedTime,
                             style: const TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
@@ -163,14 +200,14 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
                 const SizedBox(height: 5),
                 _infoRow(
                   image: Image.asset("assets/images/expect.png"),
-                  text: service,
+                  text: widget.service,
                   iconBg: const Color.fromARGB(156, 169, 227, 212),
                 ),
                 const SizedBox(height: 5),
-                if (payment != null) ...[
+                if (widget.payment != null) ...[
                   _infoRow(
                     image: Image.asset("assets/images/curuncy.png"),
-                    text: " BHD: ${payment.toString()}",
+                    text: " BHD: ${widget.payment.toString()}",
                   ),
                 ],
                 const SizedBox(height: 5),
@@ -206,15 +243,15 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: assignmentStatus == "pending"
+                        color: widget.assignmentStatus == "pending"
                             ? AppColors.new_clr
-                            : assignmentStatus == "rejected"
+                            : widget.assignmentStatus == "rejected"
                             ? Colors.red
                             : AppColors.primary_clr,
                         borderRadius: BorderRadius.circular(30),
                       ),
                       child: Text(
-                        assignmentStatus.toUpperCase(),
+                        widget.assignmentStatus.toUpperCase(),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 12,
