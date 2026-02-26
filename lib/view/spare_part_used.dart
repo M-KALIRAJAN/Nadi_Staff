@@ -123,7 +123,7 @@ class _SparePartUsedState extends ConsumerState<SparePartUsed> {
                           children: [
                             Checkbox(
                               value: sparePartsUsed,
-                              activeColor: AppColors.scoundry_clr,
+                              activeColor: AppColors.app_background_clr,
                               onChanged: (value) {
                                 setState(() {
                                   sparePartsUsed = value!;
@@ -405,36 +405,36 @@ class _SparePartUsedState extends ConsumerState<SparePartUsed> {
   }
 
   /// PAYMENT SUMMARY CARD (DYNAMIC)
-  Widget _paymentSummaryCard() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)],
-      ),
-      child: Column(
-        children: [
-          _cardHeader(AppLocalizations.of(context)!.paymentSummary, AppColors.lightgray_clr),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                 Text(AppLocalizations.of(context)!.total),
-                Text(
-                  "BHD ${totalAmount.toStringAsFixed(2)}",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primary_clr,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _paymentSummaryCard() {
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //       color: Colors.white,
+  //       borderRadius: BorderRadius.circular(15),
+  //       boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)],
+  //     ),
+  //     child: Column(
+  //       children: [
+  //         _cardHeader(AppLocalizations.of(context)!.paymentSummary, AppColors.lightgray_clr),
+  //         Padding(
+  //           padding: const EdgeInsets.all(12),
+  //           child: Row(
+  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //             children: [
+  //                Text(AppLocalizations.of(context)!.total),
+  //               Text(
+  //                 "BHD ${totalAmount.toStringAsFixed(2)}",
+  //                 style: const TextStyle(
+  //                   fontWeight: FontWeight.w600,
+  //                   color: AppColors.primary_clr,
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _cardHeader(String title, Color bgColor) {
     return Container(

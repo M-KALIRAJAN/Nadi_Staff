@@ -61,19 +61,15 @@ Future<void> _initNotifications() async {
   }
 }
 
-
   Future<void> _navigate() async {
     await Future.delayed(const Duration(seconds: 3));
-
     final isLoggedIn = await Appperfernces.isLoggedIn();
-
     if (!mounted) return;
-
     if (isLoggedIn) {
           final techId = await Appperfernces.getTechId(); // <-- get techId here
     if (techId != null) {
       await StreamChatService().connectUser(techId);
-    }
+    } 
       context.go(RouteName.bottom_nav);
     } else {
       context.go(RouteName.login);
@@ -89,7 +85,7 @@ Future<void> _initNotifications() async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.scoundry_clr,
+      backgroundColor: AppColors.app_background_clr,
       body: Center(
         child: ScaleTransition(
           scale: _scaleAnimation,

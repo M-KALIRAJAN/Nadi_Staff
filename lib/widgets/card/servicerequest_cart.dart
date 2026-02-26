@@ -71,7 +71,7 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
 
       SnackbarHelper.show(
         context,
-        backgroundColor: AppColors.scoundry_clr,
+        backgroundColor: AppColors.app_background_clr,
         message: status == "accept" ? AppLocalizations.of(context)!.serviceAccepted :  AppLocalizations.of(context)!.serviceRejected,
       );
       //   REFRESH SERVICE LIST API
@@ -97,7 +97,7 @@ class _ServicerequestCartState extends ConsumerState<ServicerequestCart> {
 
       SnackbarHelper.show(
         context,
-        backgroundColor: AppColors.scoundry_clr,
+        backgroundColor: AppColors.app_background_clr,
         message: AppLocalizations.of(context)?.startWork,
       );
 

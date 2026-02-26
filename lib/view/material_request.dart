@@ -69,7 +69,7 @@ Future<void> loadProducts() async {
       });
       SnackbarHelper.show(
         context,
-        backgroundColor: AppColors.scoundry_clr,
+        backgroundColor: AppColors.app_background_clr,
         message: "material requests submitted successfully",
       );
       context.pop();
@@ -165,7 +165,7 @@ Future<void> loadProducts() async {
                   const SizedBox(height: 20),
                   PrimaryButton(
                     radius: 12,
-                    color: AppColors.scoundry_clr,
+                    color: AppColors.app_background_clr,
                     Width: double.infinity,
                     height: 50,
                     isLoading: isLoading,

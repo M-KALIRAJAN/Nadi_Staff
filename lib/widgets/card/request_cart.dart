@@ -47,7 +47,7 @@ class RequestCart extends StatelessWidget {
       height: 55,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: AppColors.primary_clr,
+        color: AppColors.app_background_clr,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(15),
           topRight: Radius.circular(15),
@@ -63,7 +63,7 @@ class RequestCart extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: Colors.white,
               ),
-              child: Icon(icon, size: 18, color: AppColors.primary_clr),
+              child: Icon(icon, size: 18, color: AppColors.app_background_clr),
             ),
           if (icon != null) const SizedBox(width: 12),
           Expanded(
@@ -169,7 +169,7 @@ class RequestCart extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
-          color: const Color.fromARGB(156, 148, 229, 208),
+          color: const Color.fromARGB(255, 184, 190, 218),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
@@ -177,7 +177,7 @@ class RequestCart extends StatelessWidget {
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w600,
-            color: AppColors.scoundry_clr,
+            color: AppColors.app_background_clr,
             letterSpacing: 0.6,
           ),
         ),

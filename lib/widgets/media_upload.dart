@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tech_app/core/constants/app_colors.dart';
 
 class MediaUploadWidget extends StatelessWidget {
   final List<XFile> images;
@@ -30,11 +31,11 @@ class MediaUploadWidget extends StatelessWidget {
               child: Container(
                 width: 88,
                 decoration: BoxDecoration(
-                  color: const Color.fromRGBO(76, 149, 129, 1),
+                  color: const Color.fromARGB(255, 174, 183, 223),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                     mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
                     Icon(Icons.add, color: Colors.white, size: 35),
                     SizedBox(height: 4),

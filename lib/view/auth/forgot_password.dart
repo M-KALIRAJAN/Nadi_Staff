@@ -133,7 +133,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             Width: double.infinity,
                             isLoading: isLoading,
                             radius: 12,
-                            color: AppColors.primary_clr,
+                            color: AppColors.app_background_clr,
                             text: "Send Reset Link",
                             onPressed: updatePassword,
                           ),

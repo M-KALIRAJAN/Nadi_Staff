@@ -136,7 +136,7 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
               height: 55,
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                color: AppColors.primary_clr,
+                color: AppColors.app_background_clr,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(15),
                   topRight: Radius.circular(15),
@@ -190,7 +190,7 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
                             style: const TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
-                              color: Colors.green,
+                              color: AppColors.app_background_clr,
                             ),
                           ),
                         ],
@@ -201,7 +201,7 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
                 _infoRow(
                   image: Image.asset("assets/images/expect.png"),
                   text: widget.service,
-                  iconBg: const Color.fromARGB(156, 169, 227, 212),
+                  iconBg:  const Color.fromARGB(255, 198, 205, 239),
                 ),
                 const SizedBox(height: 5),
                 if (widget.payment != null) ...[
@@ -226,7 +226,7 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
                     if (assignment.status == "completed") ...[
                       _iconBox(
                         image: Image.asset("assets/images/clock.png"),
-                        bgColor: const Color.fromARGB(156, 169, 227, 212),
+                        bgColor: const Color.fromARGB(255, 198, 205, 239),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
@@ -244,10 +244,10 @@ Used Parts    : ${a.usedParts.map((p) => '${p.productName} x${p.count} = ${p.tot
                       ),
                       decoration: BoxDecoration(
                         color: widget.assignmentStatus == "pending"
-                            ? AppColors.new_clr
+                            ? AppColors.scoundry_clr
                             : widget.assignmentStatus == "rejected"
                             ? Colors.red
-                            : AppColors.primary_clr,
+                            : AppColors.app_background_clr,
                         borderRadius: BorderRadius.circular(30),
                       ),
                       child: Text(

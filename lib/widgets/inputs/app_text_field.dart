@@ -51,7 +51,7 @@ class _AppTextFieldState extends State<AppTextField> {
         ),
         floatingLabelStyle: const TextStyle(
           fontSize: 12,
-          color: AppColors.scoundry_clr,
+          color: AppColors.app_background_clr,
         ),
         filled: true,
         fillColor: Colors.white, 
@@ -69,7 +69,7 @@ class _AppTextFieldState extends State<AppTextField> {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(
-            color: AppColors.scoundry_clr,
+            color: AppColors.app_background_clr,
             width: 1.5,
           ),
         ),

@@ -33,7 +33,7 @@ class AppDropdown extends StatelessWidget {
           color: Colors.black,
         ),
         floatingLabelStyle: const TextStyle(
-          color: AppColors.scoundry_clr,
+          color: AppColors.app_background_clr,
           fontWeight: FontWeight.w400,
         ),
         filled: true,
@@ -45,7 +45,7 @@ class AppDropdown extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(
-            color: AppColors.scoundry_clr,
+            color: AppColors.app_background_clr,
             width: 1.5,
           ),
         ),

@@ -93,7 +93,7 @@ class _BottomNavState extends State<BottomNav> {
                 elevation: 0,
                 type: BottomNavigationBarType.fixed,
                 unselectedItemColor: Colors.grey,
-                selectedItemColor: AppColors.scoundry_clr,
+                selectedItemColor: AppColors.app_background_clr,
                 items: [
                   BottomNavigationBarItem(
                     icon: ImageIcon(

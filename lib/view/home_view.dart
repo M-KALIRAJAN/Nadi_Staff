@@ -113,10 +113,10 @@ class _HomeViewState extends ConsumerState<HomeView> {
                           padding: const EdgeInsets.symmetric(horizontal: 14),
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? AppColors.primary_clr
+                                ? AppColors.app_background_clr
                                 : Colors.white,
                             borderRadius: BorderRadius.circular(25),
-                            border: Border.all(color: AppColors.scoundry_clr),
+                            border: Border.all(color: AppColors.app_background_clr),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -128,7 +128,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                   fontWeight: FontWeight.w500,
                                   color: isSelected
                                       ? Colors.white
-                                      : AppColors.scoundry_clr,
+                                      : AppColors.app_background_clr,
                                 ),
                               ),
                               const SizedBox(width: 8),

@@ -120,7 +120,7 @@ class _LoginViewState extends State<LoginView> {
                                 child: Text(
                                   "Forgot Password?",
                                   style: TextStyle(
-                                    color: AppColors.scoundry_clr,
+                                    color: AppColors.app_background_clr,
                                   ),
                                 ),
                               ),
@@ -134,7 +134,7 @@ class _LoginViewState extends State<LoginView> {
                             Width: double.infinity,
                             isLoading: isLoading,
                             radius: 12,
-                            color: AppColors.primary_clr,
+                            color: AppColors.app_background_clr,
                             text: "Login",
                             onPressed: () async {
                               if (_fromkey.currentState!.validate()) {
@@ -150,7 +150,7 @@ class _LoginViewState extends State<LoginView> {
                                   SnackbarHelper.show(
                                     context,
                                     message: "Login successful",
-                                    backgroundColor: AppColors.scoundry_clr,
+                                    backgroundColor: AppColors.app_background_clr,
                                   );
                                   context.go(RouteName.bottom_nav);
                                 } else {

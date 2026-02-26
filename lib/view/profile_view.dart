@@ -305,7 +305,7 @@ Future<void> toggleNotification(bool value) async {
                 },
                 child: CircleAvatar(
                   radius: 16,
-                  backgroundColor: AppColors.primary_clr,
+                  backgroundColor: AppColors.app_background_clr,
                   child: const Icon(Icons.edit, size: 16, color: Colors.white),
                 ),
               ),
@@ -416,11 +416,9 @@ Future<void> toggleNotification(bool value) async {
 
   Widget _languageOption(String value) {
     final locale = ref.watch(languageProvider);
-
     bool isActive =
         (value == "ENG" && locale.languageCode == 'en') ||
         (value == "BH" && locale.languageCode == 'ar');
-
     return GestureDetector(
       onTap: () {
         if (value == "ENG") {
@@ -435,11 +433,11 @@ Future<void> toggleNotification(bool value) async {
         margin: const EdgeInsets.only(right: 5),
         decoration: BoxDecoration(
           color: isActive
-              ? const Color.fromRGBO(13, 95, 72, 1)
+              ? AppColors.app_background_clr
               : Colors.transparent,
           border: Border.all(
             color: isActive
-                ? const Color.fromRGBO(13, 95, 72, 1)
+                ? AppColors.app_background_clr
                 : Colors.grey.shade400,
           ),
           borderRadius: BorderRadius.circular(12),
@@ -487,7 +485,7 @@ Future<void> toggleNotification(bool value) async {
           scale: 0.8,
           child: Switch(
             value: value,
-            activeColor: AppColors.scoundry_clr,
+            activeColor: AppColors.app_background_clr,
             onChanged: onChanged,
           ),
         ),

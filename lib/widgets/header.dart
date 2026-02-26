@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tech_app/core/constants/app_colors.dart';
 import 'package:tech_app/provider/InventoryList_provider.dart';
 import 'package:tech_app/provider/notification_Service_Provider.dart';
 import 'package:tech_app/routes/route_name.dart';
@@ -116,7 +117,7 @@ final notificationCount  = ref.watch(notificationServiceProvider);
           width: 38,
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
-            color: Color.fromRGBO(183, 213, 205, 1),
+            color: Color.fromARGB(255, 186, 193, 227),
           ),
           alignment: Alignment.center,
           child: const Icon(
