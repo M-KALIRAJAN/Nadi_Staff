@@ -43,8 +43,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-/android/key.properties
-/android/local.properties
-/android/app/upload-keystore.jks
+# Keystore file
+android/app/upload-keystore.jks
+
+# Properties files
+android/key.properties
+android/local.properties
 l10n.yaml
 .env
